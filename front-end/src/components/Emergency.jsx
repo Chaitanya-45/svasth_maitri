@@ -42,7 +42,8 @@ function Emergency() {
     // Filter volunteers based on the search query
     const lowercasedQuery = searchQuery.toLowerCase();
     const filtered = volunteers.filter(volunteer =>
-      volunteer.location.toLowerCase().includes(lowercasedQuery)
+      volunteer.location.toLowerCase().includes(lowercasedQuery) ||
+      volunteer.name.toLowerCase().includes(lowercasedQuery)
     );
     setFilteredVolunteers(filtered);
   }, [searchQuery, volunteers]);
@@ -63,9 +64,8 @@ function Emergency() {
 
         if (volunteerEntry) {
           const [id, volunteerData] = volunteerEntry;
-          const newLocation = prompt('Enter new location:', volunteerData.location);
           
-          if (newLocation !== null && newLocation.trim()) {
+          if (newLocation.trim()) {
             await volunteersRef.child(id).update({ location: newLocation.trim() });
             alert('Location updated successfully!');
             
@@ -75,6 +75,8 @@ function Emergency() {
             const updatedVolunteerArray = updatedData ? Object.entries(updatedData).map(([id, volunteer]) => ({ ...volunteer, id })) : [];
             setVolunteers(updatedVolunteerArray);
             setFilteredVolunteers(updatedVolunteerArray);
+          } else {
+            alert('Please enter a new location.');
           }
         } else {
           alert('Registration number not found.');
@@ -90,91 +92,134 @@ function Emergency() {
     }
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p style={{ color: 'red' }}>{error}</p>;
-  }
-
   return (
-    <div className="volunteers">
-      <h1 style={{ textAlign: 'center' }}>List of Volunteers</h1>
-      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by location..."
-          style={{
-            width: '50%',
-            padding: '10px',
-            borderRadius: '5px',
-            border: '1px solid #ccc',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            boxSizing: 'border-box',
-            fontSize: '16px',
-            marginRight: '10px',
-          }}
-        />
-        <button onClick={() => setUpdateMode(true)} style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc', backgroundColor: '#4CAF50', color: 'white' }}>
-          Update Location
+    <div className="emergency-container">
+      <div className="emergency-header">
+        <h1>First Aid Volunteers</h1>
+        <p>Find nearby volunteers for emergency medical assistance</p>
+      </div>
+
+      <div className="control-panel">
+        <div className="search-box">
+          <span className="search-icon">🔍</span>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by name or location..."
+            className="search-input"
+          />
+        </div>
+        
+        <button 
+          className="update-button"
+          onClick={() => setUpdateMode(!updateMode)}
+        >
+          {updateMode ? 'Cancel Update' : 'Update Location'}
         </button>
       </div>
 
       {updateMode && (
-        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-          <input
-            type="text"
-            value={medicalRegistrationNumber}
-            onChange={(e) => setMedicalRegistrationNumber(e.target.value)}
-            placeholder="Enter registration number..."
-            style={{
-              padding: '10px',
-              borderRadius: '5px',
-              border: '1px solid #ccc',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-              boxSizing: 'border-box',
-              fontSize: '16px',
-              marginRight: '10px',
-            }}
-          />
-          <button onClick={handleUpdateButtonClick} style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc', backgroundColor: '#4CAF50', color: 'white' }}>
-            Submit
-          </button>
-          <button onClick={() => setUpdateMode(false)} style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc', backgroundColor: '#f44336', color: 'white', marginLeft: '10px' }}>
-            Cancel
-          </button>
+        <div className="update-panel">
+          <div className="input-group">
+            <label htmlFor="regNumber">Registration Number</label>
+            <input
+              id="regNumber"
+              type="text"
+              value={medicalRegistrationNumber}
+              onChange={(e) => setMedicalRegistrationNumber(e.target.value)}
+              placeholder="Enter medical registration number"
+            />
+          </div>
+          
+          <div className="input-group">
+            <label htmlFor="newLocation">New Location</label>
+            <input
+              id="newLocation"
+              type="text"
+              value={newLocation}
+              onChange={(e) => setNewLocation(e.target.value)}
+              placeholder="Enter your current location"
+            />
+          </div>
+          
+          <div className="button-group">
+            <button 
+              className="submit-button"
+              onClick={handleUpdateButtonClick}
+            >
+              Update
+            </button>
+            <button 
+              className="cancel-button"
+              onClick={() => setUpdateMode(false)}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
 
-      <table className="volunteers-table">
-        <thead>
-          <tr>
-            <th>S.No</th>
-            <th>Name</th>
-            <th>Contact</th>
-            <th>Location</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredVolunteers.length > 0 ? (
-            filteredVolunteers.map((volunteer, index) => (
-              <tr key={volunteer.id}>
-                <td>{index + 1}</td>
-                <td>{volunteer.name}</td>
-                <td>{volunteer.contact}</td>
-                <td>{volunteer.location}</td>
-              </tr>
-            ))
+      {loading ? (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading volunteers...</p>
+        </div>
+      ) : error ? (
+        <div className="error-container">
+          <span className="error-icon">⚠️</span>
+          <p>{error}</p>
+          <button className="retry-button" onClick={() => window.location.reload()}>
+            Retry
+          </button>
+        </div>
+      ) : (
+        <div className="table-container">
+          {filteredVolunteers.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-icon">👨‍⚕️</div>
+              <p>No volunteers found matching your search criteria</p>
+              {searchQuery && (
+                <button className="reset-search" onClick={() => setSearchQuery('')}>
+                  Clear Search
+                </button>
+              )}
+            </div>
           ) : (
-            <tr>
-              <td colSpan="4">No volunteers available</td>
-            </tr>
+            <>
+              <div className="table-info">
+                <span className="volunteer-count">
+                  Showing {filteredVolunteers.length} volunteer{filteredVolunteers.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+              <table className="volunteers-table">
+                <thead>
+                  <tr>
+                    <th width="8%">S.No</th>
+                    <th width="32%">Name</th>
+                    <th width="25%">Contact</th>
+                    <th width="35%">Location</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredVolunteers.map((volunteer, index) => (
+                    <tr key={volunteer.id}>
+                      <td>{index + 1}</td>
+                      <td>{volunteer.name}</td>
+                      <td>
+                        <a href={`tel:${volunteer.contact}`} className="contact-link">
+                          {volunteer.contact}
+                        </a>
+                      </td>
+                      <td>{volunteer.location}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
-        </tbody>
-      </table>
+        </div>
+      )}
     </div>
   );
 }

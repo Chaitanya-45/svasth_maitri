@@ -7,7 +7,6 @@ import medicine from "../assets/medicine.jpg";
 import equipment from "../assets/equipment.jpg";
 import blood from "../assets/blood.jpg";
 
-
 Modal.setAppElement("#root");
 
 function Donations() {
@@ -21,23 +20,15 @@ function Donations() {
 
   const [hospitalData, setHospitalData] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
+  const [contactCardId, setContactCardId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const [restrictedMedicineEmail, setRestrictedMedicineEmail] = useState(null);
   const [restrictedMedicineName, setRestrictedMedicineName] = useState("");
 
   const restrictedMedicines = [
-    "Adderall",
-    "Ritalin",
-    "Ambien",
-    "Sonata",
-    "Warfarin",
-    "Heparin",
-    "Risperdal",
-    "Seroquel",
-    "Abilify",
-    "Lunesta",
-    "Concerta",
+    "Adderall", "Ritalin", "Ambien", "Sonata", "Warfarin", 
+    "Heparin", "Risperdal", "Seroquel", "Abilify", "Lunesta", "Concerta",
   ];
 
   const sampleHospitalData = [
@@ -165,82 +156,6 @@ function Donations() {
     fetchBloodDonations();
   }, []);
 
-  // const searchDonations = () => {
-  //   if (!searchQuery.trim()) {
-  //     return {
-  //       medicine: medicineDonations,
-  //       equipment: equipmentDonations,
-  //       blood: bloodDonations,
-  //     };
-  //   }
-
-  //   const tokens = tokenize(searchQuery);
-  //   let medicineMatches = null;
-  //   let equipmentMatches = null;
-  //   let bloodMatches = null;
-
-  //   tokens.forEach((token) => {
-  //     const ids = medicineIndex[token];
-  //     if (ids) {
-  //       if (medicineMatches === null) {
-  //         medicineMatches = new Set(ids);
-  //       } else {
-  //         medicineMatches = new Set(
-  //           [...medicineMatches].filter((id) => ids.has(id))
-  //         );
-  //       }
-  //     } else {
-  //       medicineMatches = new Set();
-  //     }
-  //   });
-
-  //   tokens.forEach((token) => {
-  //     const ids = equipmentIndex[token];
-  //     if (ids) {
-  //       if (equipmentMatches === null) {
-  //         equipmentMatches = new Set(ids);
-  //       } else {
-  //         equipmentMatches = new Set(
-  //           [...equipmentMatches].filter((id) => ids.has(id))
-  //         );
-  //       }
-  //     } else {
-  //       equipmentMatches = new Set();
-  //     }
-  //   });
-
-  //   tokens.forEach((token) => {
-  //     const ids = bloodIndex[token];
-  //     if (ids) {
-  //       if (bloodMatches === null) {
-  //         bloodMatches = new Set(ids);
-  //       } else {
-  //         bloodMatches = new Set([...bloodMatches].filter((id) => ids.has(id)));
-  //       }
-  //     } else {
-  //       bloodMatches = new Set();
-  //     }
-  //   });
-
-  //   const filteredMedicineDonations = medicineMatches
-  //     ? Array.from(medicineMatches).map((id) => medicineDonations[id])
-  //     : [];
-
-  //   const filteredEquipmentDonations = equipmentMatches
-  //     ? Array.from(equipmentMatches).map((id) => equipmentDonations[id])
-  //     : [];
-
-  //   const filteredBloodDonations = bloodMatches
-  //     ? Array.from(bloodMatches).map((id) => bloodDonations[id])
-  //     : [];
-
-  //   return {
-  //     medicine: filteredMedicineDonations,
-  //     equipment: filteredEquipmentDonations,
-  //     blood: filteredBloodDonations,
-  //   };
-  // };
-
   const filterDonations = (donations, query, fields) => {
     if (!query.trim()) return donations;
 
@@ -269,136 +184,228 @@ function Donations() {
     ["bloodType", "location"]
   );
   
-
-  const handleContactHospital = (donationLocation) => {
+  const handleContactHospital = (donationLocation, cardId) => {
     const matchedHospital = hospitalData.find(
       (hospital) =>
         hospital.location.toLowerCase() === donationLocation.toLowerCase()
     );
     if (matchedHospital) {
       setSelectedContact(matchedHospital.contact);
+      setContactCardId(cardId);
     } else {
       alert("No hospital found for this location");
       setSelectedContact(null);
     }
   };
 
+  const handleCloseContact = () => {
+    setSelectedContact(null);
+    setContactCardId(null);
+  };
+
   return (
-    <div>
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Search Donations..."
-        style={{
-          marginTop: "40px",
-          marginLeft: "35%",
-          marginBottom: "10px",
-          width: "35%",
-          padding: "10px",
-          borderRadius: "5px",
-          border: "1px solid #ccc",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-          boxSizing: "border-box",
-          fontSize: "16px",
-        }}
-      />
-      {/* Medicine Donations Section */}
-      <section className="donsec">
-        <h1 style={{ textAlign: "center" }}>Medicine Donations</h1>
-        <div className="donation-card">
-          {filteredMedicineDonations.map((donation, index) => (
-            <div key={index} className="card">
-              <img
-              src={medicine}
-              alt={donation.medicineName}
-              style={{
-                width: "100%",
-                maxHeight: "150px",
-                objectFit: "cover",
-                borderRadius: "5px",
-              }}
-            />
-              <h2>Medicine Name: {donation.medicineName}</h2>
-              <p>Quantity: {donation.quantity}</p>
-              <p>Location: {donation.location}</p>
-              <p>Expiry Date: {donation.expiryDate}</p>
-              {selectedContact && (
-                <div className="contact-popup">
-                  <p>Contact Number: {selectedContact}</p>
-                  <button onClick={() => setSelectedContact(null)}>
-                    Close
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
+    <div className="donations-page">
+      <div className="search-container">
+        <div className="search-wrapper">
+          <span className="search-icon">🔍</span>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by name, location, type..."
+            className="search-input"
+          />
         </div>
+      </div>
+
+      {/* Medicine Donations Section */}
+      <section className="donation-section">
+        <div className="section-header">
+          <h2>Medicine Donations</h2>
+          <div className="section-divider"></div>
+        </div>
+        
+        {filteredMedicineDonations.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon">💊</div>
+            <p>No medicine donations available{searchQuery ? " matching your search" : ""}.</p>
+          </div>
+        ) : (
+          <div className="cards-grid">
+            {filteredMedicineDonations.map((donation, index) => {
+              const cardId = `medicine-${index}`;
+              return (
+                <div key={cardId} className="donation-card">
+                  <div className="card-image-container">
+                    <img src={medicine} alt={donation.medicineName} className="card-image" />
+                  </div>
+                  <div className="card-content">
+                    <h3 className="card-title">{donation.medicineName}</h3>
+                    
+                    <div className="card-details">
+                      <div className="detail-item">
+                        <span className="detail-icon">📦</span>
+                        <span>Quantity: {donation.quantity}</span>
+                      </div>
+                      
+                      <div className="detail-item">
+                        <span className="detail-icon">📍</span>
+                        <span>Location: {donation.location}</span>
+                      </div>
+                      
+                      <div className="detail-item">
+                        <span className="detail-icon">📅</span>
+                        <span>Expires: {donation.expiryDate}</span>
+                      </div>
+                    </div>
+                   
+                    
+                    {selectedContact && contactCardId === cardId && (
+                      <div className="contact-popup">
+                        <div className="contact-header">
+                          <h4>Hospital Contact</h4>
+                          <button className="close-button" onClick={handleCloseContact}>
+                            ✖
+                          </button>
+                        </div>
+                        <div className="contact-body">
+                          <div className="contact-item">
+                            <span className="contact-icon">📞</span>
+                            <span>{selectedContact}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* Equipment Donations Section */}
-      <section className="donsec">
-        <h1 style={{ textAlign: "center" }}>Equipment Donations</h1>
-        <div className="donation-card">
-          {filteredEquipmentDonations.map((donation, index) => (
-            <div key={index} className="card">
-              <img
-              src={equipment}
-              alt={donation.equipmentName}
-              style={{
-                width: "100%",
-                maxHeight: "150px",
-                objectFit: "cover",
-                borderRadius: "5px",
-              }}
-            />
-              <h2>Equipment Name: {donation.equipmentName}</h2>
-              <p>Quantity: {donation.quantity}</p>
-              <p>Location: {donation.location}</p>
-              <p>Condition: {donation.condition}</p>
-              {selectedContact && (
-                <div className="contact-popup">
-                  <p>Contact Number: {selectedContact}</p>
-                  <button onClick={() => setSelectedContact(null)}>
-                    Close
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
+      <section className="donation-section">
+        <div className="section-header">
+          <h2>Equipment Donations</h2>
+          <div className="section-divider"></div>
         </div>
+        
+        {filteredEquipmentDonations.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon">🩺</div>
+            <p>No equipment donations available{searchQuery ? " matching your search" : ""}.</p>
+          </div>
+        ) : (
+          <div className="cards-grid">
+            {filteredEquipmentDonations.map((donation, index) => {
+              const cardId = `equipment-${index}`;
+              return (
+                <div key={cardId} className="donation-card">
+                  <div className="card-image-container">
+                    <img src={equipment} alt={donation.equipmentName} className="card-image" />
+                  </div>
+                  <div className="card-content">
+                    <h3 className="card-title">{donation.equipmentName}</h3>
+                    
+                    <div className="card-details">
+                      <div className="detail-item">
+                        <span className="detail-icon">📦</span>
+                        <span>Quantity: {donation.quantity}</span>
+                      </div>
+                      
+                      <div className="detail-item">
+                        <span className="detail-icon">📍</span>
+                        <span>Location: {donation.location}</span>
+                      </div>
+                      
+                      <div className="detail-item">
+                        <span className="condition-badge">{donation.condition}</span>
+                      </div>
+                    </div>
+                    {selectedContact && contactCardId === cardId && (
+                      <div className="contact-popup">
+                        <div className="contact-header">
+                          <h4>Hospital Contact</h4>
+                          <button className="close-button" onClick={handleCloseContact}>
+                            ✖
+                          </button>
+                        </div>
+                        <div className="contact-body">
+                          <div className="contact-item">
+                            <span className="contact-icon">📞</span>
+                            <span>{selectedContact}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* Blood Donations Section */}
-      <section className="donsec">
-        <h1 style={{ textAlign: "center" }}>Blood Donations</h1>
-        <div className="donation-card">
-          {filteredBloodDonations.map((donation, index) => (
-            <div key={index} className="card">
-              <img
-              src={blood}
-              alt={donation.bloodType}
-              style={{
-                width: "100%",
-                maxHeight: "150px",
-                objectFit: "cover",
-                borderRadius: "5px",
-              }}
-            />
-              <h2>Blood Type: {donation.bloodType}</h2>
-              <p>Donor's Age: {donation.age}</p>
-              <p>Location: {donation.location}</p>
-              {selectedContact && (
-                <div className="contact-popup">
-                  <p>Contact Number: {selectedContact}</p>
-                  <button onClick={() => setSelectedContact(null)}>
-                    Close
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
+      <section className="donation-section">
+        <div className="section-header">
+          <h2>Blood Donations</h2>
+          <div className="section-divider"></div>
         </div>
+        
+        {filteredBloodDonations.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon">🩸</div>
+            <p>No blood donations available{searchQuery ? " matching your search" : ""}.</p>
+          </div>
+        ) : (
+          <div className="cards-grid">
+            {filteredBloodDonations.map((donation, index) => {
+              const cardId = `blood-${index}`;
+              return (
+                <div key={cardId} className="donation-card">
+                  <div className="card-image-container">
+                    <img src={blood} alt={donation.bloodType} className="card-image" />
+                    <div className="blood-type-badge">{donation.bloodType}</div>
+                  </div>
+                  <div className="card-content">
+                    <h3 className="card-title">Blood Donation</h3>
+                    
+                    <div className="card-details">
+                      <div className="detail-item">
+                        <span className="detail-icon">❤️</span>
+                        <span>Donor's Age: {donation.age}</span>
+                      </div>
+                      
+                      <div className="detail-item">
+                        <span className="detail-icon">📍</span>
+                        <span>Location: {donation.location}</span>
+                      </div>
+                    </div>
+                    
+                    {selectedContact && contactCardId === cardId && (
+                      <div className="contact-popup">
+                        <div className="contact-header">
+                          <h4>Hospital Contact</h4>
+                          <button className="close-button" onClick={handleCloseContact}>
+                            ✖
+                          </button>
+                        </div>
+                        <div className="contact-body">
+                          <div className="contact-item">
+                            <span className="contact-icon">📞</span>
+                            <span>{selectedContact}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
     </div>
   );

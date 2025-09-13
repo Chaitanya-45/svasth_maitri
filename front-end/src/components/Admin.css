@@ -1,30 +1,236 @@
-/* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-  }
-  
-  h2 {
-    text-align: center;
-    color: #333;
-    margin-top: 20px;
-  }
-  
-  .error-message {
-    color: red;
-    text-align: center;
-    font-weight: bold;
-    margin: 10px 0;
-  }
-  
+/* Admin Dashboard Styles */
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.admin-header {
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.admin-header h2 {
+  color: #2c3e50;
+  font-size: 28px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.donations-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 25px;
+  overflow: hidden;
+}
+
+.section-header {
+  font-size: 20px;
+  color: #3498db;
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.donations-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.donation-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.donation-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #eee;
+}
+
+.card-header h4 {
+  margin: 0;
+  font-size: 17px;
+  color: #333;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 65%;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.status-badge.pending {
+  background-color: #fef6e7;
+  color: #f39c12;
+}
+
+.status-badge.accepted {
+  background-color: #e7f4e8;
+  color: #27ae60;
+}
+
+.status-badge.rejected {
+  background-color: #fdeeee;
+  color: #e74c3c;
+}
+
+.donation-details {
+  padding: 16px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  margin-bottom: 12px;
+  font-size: 14px;
+  align-items: center;
+}
+
+.detail-label {
+  color: #7f8c8d;
+  font-weight: 500;
+  padding-right: 10px;
+}
+
+.detail-value {
+  color: #34495e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-actions {
+  padding: 16px;
+  border-top: 1px solid #eee;
+  background-color: #f9f9f9;
+}
+
+.status-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background-color: white;
+  cursor: pointer;
+  font-size: 14px;
+  outline: none;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+.status-select:hover, .status-select:focus {
+  border-color: #3498db;
+}
+
+.error-message {
+  background-color: #fdeeee;
+  border-left: 4px solid #e74c3c;
+  color: #c0392b;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: #95a5a6;
+}
+
+.empty-icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .donations-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    margin-top: 20px;
+    grid-template-columns: 1fr;
   }
   
-  
+  .admin-container {
+    padding: 15px;
+  }
+}
+
+/* Add these new styles for the location filter */
+
+.location-filter-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 16px 20px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+}
+
+.location-filter-container label {
+  font-weight: 500;
+  color: #2c3e50;
+  margin-right: 15px;
+  font-size: 15px;
+}
+
+.location-filter-select {
+  min-width: 220px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background-color: white;
+  cursor: pointer;
+  font-size: 14px;
+  outline: none;
+  color: #333;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.location-filter-select:hover {
+  border-color: #3498db;
+}
+
+.location-filter-select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+}

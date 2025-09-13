@@ -110,3 +110,44 @@
 .button:hover {
     animation: buttonHover 0.5s forwards;
 }
+
+/* Add to your form CSS files */
+.message {
+    padding: 15px;
+    border-radius: 6px;
+    margin: 0 20px 20px;
+    font-weight: 500;
+    text-align: center;
+  }
+  
+  .message.success {
+    background-color: #ebf8f2;
+    color: #1f9d55;
+    border: 1px solid #c6f6d5;
+  }
+  
+  .message.error {
+    background-color: #fef2f2;
+    color: #e53e3e;
+    border: 1px solid #fed7d7;
+  }
+  
+  .points-note {
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f0f7ff;
+    border-radius: 6px;
+    color: #3182ce;
+    font-weight: 500;
+  }
+  
+  .limit-message {
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #fef2f2;
+    border-radius: 6px;
+    color: #e53e3e;
+    font-weight: 500;
+  }

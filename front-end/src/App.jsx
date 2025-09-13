@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
+import { useAuth } from './contexts/AuthContext';
 
 import BfrNavbar from "./components/BfrNavbar";
 import BfrBody from "./components/BfrBody";
@@ -11,86 +14,127 @@ import AftrNavbar from "./components/AftrNavbar";
 import Profile from "./components/Profile";
 import MedForm from "./components/MedForm";
 import MedEquipment from "./components/MedEquipment";
-import BloodDonation from "./components/BloodDonation";
 import Donations from "./components/Donations";
 import Articlespage from "./components/Articlespage";
 import Translate from "./components/Translate";
 import Donate from "./components/Donate";
 import CommunityPage from "./components/CommunityPage";
-import { auth } from "./firebase/firebase";
 import ImpMedicineDon from "./components/ImpMedicineDon";
 import Questionnaire from "./components/Questionnaire";
 import Volform from "./components/Volform";
 import Emergency from "./components/Emergency";
 import Chatbot from "./components/Chatbot";
 import Admin from "./components/Admin";
+import AdminSetup from "./components/AdminSetup";
+
+// Navigation wrapper based on auth status
+const Navigation = () => {
+  const { currentUser } = useAuth();
+  return currentUser ? <AftrNavbar /> : <BfrNavbar />;
+};
+
+function AppContent() {
+  return (
+    <div>
+      <Navigation />
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<BfrBody />} />
+        <Route path="/Signup" element={<Signup />} />
+        <Route path="/Login" element={<Login />} />
+        
+        {/* Protected user routes */}
+        <Route path="/aftrbody" element={
+          <ProtectedRoute>
+            <AftrBody />
+          </ProtectedRoute>
+        } />
+        <Route path="/Profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="/MedForm" element={
+          <ProtectedRoute>
+            <MedForm />
+          </ProtectedRoute>
+        } />
+        <Route path="/MedEquipment" element={
+          <ProtectedRoute>
+            <MedEquipment />
+          </ProtectedRoute>
+        } />
+        <Route path="/Donations" element={
+          <ProtectedRoute>
+            <Donations />
+          </ProtectedRoute>
+        } />
+        <Route path="/Articlespage" element={
+          <ProtectedRoute>
+            <Articlespage />
+          </ProtectedRoute>
+        } />
+        <Route path="/CommunityPage" element={
+          <ProtectedRoute>
+            <CommunityPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/Questionnaire" element={
+          <ProtectedRoute>
+            <Questionnaire />
+          </ProtectedRoute>
+        } />
+        <Route path="/Donate" element={
+          <ProtectedRoute>
+            <Donate />
+          </ProtectedRoute>
+        } />
+        <Route path="/ImpMedicineDon" element={
+          <ProtectedRoute>
+            <ImpMedicineDon />
+          </ProtectedRoute>
+        } />
+        <Route path="/Volform" element={
+          <ProtectedRoute>
+            <Volform />
+          </ProtectedRoute>
+        } />
+        <Route path="/Emergency" element={
+          <ProtectedRoute>
+            <Emergency />
+          </ProtectedRoute>
+        } />
+        <Route path="/Chatbot" element={
+          <ProtectedRoute>
+            <Chatbot />
+          </ProtectedRoute>
+        } />
+        
+        {/* Admin protected route */}
+        <Route path="/Admin" element={
+          <AdminRoute>
+            <Admin />
+          </AdminRoute>
+        } />
+        <Route path="/admin-setup" element={
+          <AdminRoute>
+            <AdminSetup />
+          </AdminRoute>
+        } />
+      </Routes>
+      <Translate />
+      <Footer />
+    </div>
+  );
+}
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    auth
-      .signOut()
-      .then(() => {
-        setIsLoggedIn(false);
-      })
-      .catch((error) => {
-        console.error("Error logging out:", error.message);
-      });
-  };
-
   return (
-    <Router>
-      <div>
-        {isLoggedIn ? (
-          <AftrNavbar handleLogout={handleLogout} />
-        ) : (
-          <BfrNavbar />
-        )}
-        <Routes>
-          <Route path="/" element={<BfrBody />} />
-          <Route path="/Signup" element={<Signup />} />
-          <Route path="/Login" element={<Login handleLogin={handleLogin} />} />
-          {isLoggedIn ? (
-            <>
-              <Route path="/AftrBody" element={<AftrBody />} />
-              <Route path="/Profile" element={<Profile />} />
-              <Route path="/MedForm" element={<MedForm />} />
-              <Route path="/MedEquipment" element={<MedEquipment />} />
-              <Route path="/BloodDonation" element={<BloodDonation/>} />
-              <Route path="/Donations" element={<Donations/>} />
-              <Route path="/Articlespage" element={<Articlespage />} />
-              <Route path="/CommunityPage" element={<CommunityPage />} /> 
-              <Route path="/Questionnaire" element={<Questionnaire />} />
-              <Route path="/Donate" element={<Donate />} />
-              <Route path="/ImpMedicineDon" element={<ImpMedicineDon />} />
-              <Route path="/Volform" element={<Volform />} />
-              <Route path="/Emergency" element={<Emergency />} />
-              <Route path="/Chatbot" element={<Chatbot />} />
-              <Route path="/Admin" element={<Admin/>} /> 
-            </>
-          ) : null}
-        </Routes>
-        <Translate />
-        <Footer />
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </AuthProvider>
   );
 }
 

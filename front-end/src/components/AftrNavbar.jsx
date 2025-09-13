@@ -2,17 +2,19 @@ import React from 'react';
 import { Link } from 'react-router-dom'; 
 import './BfrNavbar.css'; 
 import { auth } from '../firebase/firebase';
-
-const handleLogout = async () => {
-    try {
-      await auth.signOut();
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  };
-  
+import { useAuth } from '../contexts/AuthContext';
 
 function AftrNavbar() {
+    const { isAdmin } = useAuth();
+    
+    const handleLogout = async () => {
+        try {
+            await auth.signOut();
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
+    
     const showMenu = () => {
         document.getElementById("navLinks").style.right = "0";
     }
@@ -36,8 +38,13 @@ function AftrNavbar() {
                         <li><Link to="/CommunityPage">Community</Link></li>
                         <li><Link to="/Articlespage">Articles</Link></li>
                         <li><Link to="/Profile">Profile</Link></li>
+                        
+                        {/* Only show Admin link if user is an admin */}
+                        {isAdmin && (
+                            <li><Link to="/Admin">Admin Dashboard</Link></li>
+                        )}
+                        
                         <li><Link to="/" onClick={handleLogout}>Logout</Link></li>
-
                     </ul>
                 </div>
                 <i className="fa fa-bars" onClick={showMenu}></i>

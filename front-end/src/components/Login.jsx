@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Grid, TextField, Button, Typography, Box, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import { auth, googleProvider } from '../firebase/firebase';
+import { Card, CardContent, Grid, TextField, Button, Typography, Box } from '@mui/material';
+import { auth, googleProvider, checkIsAdmin } from '../firebase/firebase';
 import { Navigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [role, setRole] = useState('user')
+  const [redirectPath, setRedirectPath] = useState('');
+  
+  const { currentUser, isAdmin } = useAuth();
 
+  // If already logged in, redirect to appropriate page
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) {
-        setIsLoggedIn(true);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
+    if (currentUser) {
+      setRedirectPath(isAdmin ? '/Admin' : '/aftrbody');
+    }
+  }, [currentUser, isAdmin]);
 
   const handleLoginClick = async () => {
     if (!email || !password) {
@@ -26,37 +26,29 @@ const Login = () => {
     }
 
     try {
-      await auth.signInWithEmailAndPassword(email, password);
-      setIsLoggedIn(true);
-      setEmail('');
-      setPassword('');
       setError('');
+      await auth.signInWithEmailAndPassword(email, password);
+      // Redirection will happen automatically via useEffect
     } catch (error) {
+      console.error('Login error:', error);
       setError(error.message);
     }
   };
 
   const handleGoogleLogin = async () => {
     try {
+      setError('');
       await auth.signInWithPopup(googleProvider);
-      setIsLoggedIn(true);
+      // Redirection will happen automatically via useEffect
     } catch (error) {
+      console.error('Google login error:', error);
       setError(error.message);
     }
   };
 
-  const handleRoleChange = (event) => {
-    setRole(event.target.value);
-  };
-
-  if (isLoggedIn) {
-    return role === 'user' ? (
-      <Navigate to="/aftrbody" replace />
-    ) : (
-      <Navigate to="/Admin" replace />
-    );
+  if (redirectPath) {
+    return <Navigate to={redirectPath} replace />;
   }
-
 
   return (
     <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh', backgroundColor: 'white' }}>
@@ -66,19 +58,6 @@ const Login = () => {
             <Typography variant="h4" align="center" gutterBottom>
               Login
             </Typography>
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="role-label">Role</InputLabel>
-              <Select
-                labelId="role-label"
-                id="role"
-                value={role}
-                label="Role"
-                onChange={handleRoleChange}
-              >
-                <MenuItem value="user">User</MenuItem>
-                <MenuItem value="admin">Admin</MenuItem>
-              </Select>
-            </FormControl>
             <TextField
               id="email"
               label="Email"
@@ -108,10 +87,10 @@ const Login = () => {
               <Button
                 variant="contained"
                 sx={{
-                  backgroundColor: '#007bff', // Blue color
+                  backgroundColor: '#007bff',
                   color: 'white',
                   '&:hover': {
-                    backgroundColor: '#0056b3', // Darker blue on hover
+                    backgroundColor: '#0056b3',
                   },
                 }}
                 fullWidth
@@ -124,15 +103,15 @@ const Login = () => {
               <Button
                 variant="contained"
                 sx={{
-                  backgroundColor: '#4285F4', // Google blue color
+                  backgroundColor: '#4285F4',
                   color: 'white',
                   '&:hover': {
-                    backgroundColor: '#357AE8', // Darker Google blue on hover
+                    backgroundColor: '#357AE8',
                   },
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  paddingLeft: '0', // Remove default padding
+                  paddingLeft: '0',
                 }}
                 fullWidth
                 onClick={handleGoogleLogin}
@@ -141,9 +120,9 @@ const Login = () => {
                     src="https://developers.google.com/identity/images/g-logo.png"
                     alt="Google logo"
                     style={{
-                      height: '35px', // Adjust the size to fit well
+                      height: '35px',
                       width: '35px',
-                      marginRight: '8px', // Space between icon and text
+                      marginRight: '8px',
                     }}
                   />
                 }
@@ -158,4 +137,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Login;

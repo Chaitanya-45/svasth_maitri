@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { database } from '../firebase/firebase';
+import './Admin.css';
 
 function Admin() {
   const [donations, setDonations] = useState({
@@ -8,6 +9,7 @@ function Admin() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('all');
 
   useEffect(() => {
     const fetchDonations = (type) => {
@@ -21,7 +23,9 @@ function Admin() {
             [type]: data
               ? Object.entries(data).map(([id, details]) => ({
                   id,
-                  ...details
+                  ...details,
+                  // If createdAt doesn't exist, use current timestamp as fallback
+                  createdAt: details.createdAt || new Date().toISOString()
                 }))
               : []
           }));
@@ -59,115 +63,155 @@ function Admin() {
     }
   };
 
-  const renderDonations = (type, title) => (
-    <div style={styles.donationsContainer}>
-      <h3 style={styles.header}>{title}</h3>
-      {donations[type].length === 0 ? (
-        <p>No {title.toLowerCase()} available.</p>
-      ) : (
-        <div style={styles.donationsList}>
-          {donations[type].map((donation) => (
-            <div key={donation.id} style={styles.donationCard}>
-              <p>
-                <strong>Item Name:</strong> {donation.medicineName || donation.equipmentName}
-              </p>
-              <p>
-                <strong>Quantity:</strong> {donation.quantity}
-              </p>
-              <p>
-                <strong>Time:</strong> {donation.donationTime}
-              </p>
-              <p>
-                <strong>Status:</strong> {donation.status}
-              </p>
-              <select
-                value={donation.status}
-                onChange={(e) => handleStatusChange(type, donation.id, e.target.value)}
-                disabled={loading}
-                style={styles.select}
-              >
-                <option value="pending">Pending</option>
-                <option value="accepted">Accepted</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+  const getStatusBadgeClass = (status) => {
+    switch (status) {
+      case 'accepted': return 'status-badge accepted';
+      case 'rejected': return 'status-badge rejected';
+      default: return 'status-badge pending';
+    }
+  };
+
+  // Format date in a user-friendly way
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Not recorded';
+    
+    try {
+      const date = new Date(dateString);
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) return 'Invalid date';
+      
+      // Format: "March 28, 2025 at 2:15 PM"
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (e) {
+      console.error('Error formatting date:', e);
+      return 'Date error';
+    }
+  };
+
+  // Get all unique locations from both medicine and equipment donations
+  const getUniqueLocations = () => {
+    const medicineLocations = donations.medicine.map(item => item.location);
+    const equipmentLocations = donations.equipment.map(item => item.location);
+    const allLocations = [...medicineLocations, ...equipmentLocations];
+    // Filter out undefined/null values and create a unique set
+    const uniqueLocations = [...new Set(allLocations.filter(location => location))];
+    return uniqueLocations;
+  };
+
+  const renderDonations = (type, title) => {
+    // Filter donations by selected location if not 'all'
+    const filteredDonations = selectedLocation === 'all' 
+      ? donations[type] 
+      : donations[type].filter(donation => donation.location === selectedLocation);
+
+    return (
+      <div className="donations-container">
+        <h3 className="section-header">{title}</h3>
+        {filteredDonations.length === 0 ? (
+          <div className="empty-state">
+            <i className="empty-icon">📦</i>
+            <p>
+              {selectedLocation === 'all' 
+                ? `No ${title.toLowerCase()} available at this time.` 
+                : `No ${title.toLowerCase()} available for ${selectedLocation}.`}
+            </p>
+          </div>
+        ) : (
+          <div className="donations-list">
+            {filteredDonations.map((donation) => (
+              <div key={donation.id} className="donation-card">
+                <div className="card-header">
+                  <h4 title={donation.medicineName || donation.equipmentName}>
+                    {donation.medicineName || donation.equipmentName}
+                  </h4>
+                  <span className={getStatusBadgeClass(donation.status)}>
+                    {donation.status}
+                  </span>
+                </div>
+                
+                <div className="donation-details">
+                  <div>
+                    <div className="detail-row">
+                      <span className="detail-label">Quantity:</span>
+                      <span className="detail-value">{donation.quantity}</span>
+                    </div>
+                    
+                    <div className="detail-row">
+                      <span className="detail-label">Donation Time:</span>
+                      <span className="detail-value">{donation.donationTime}</span>
+                    </div>
+                    
+                    <div className="detail-row">
+                      <span className="detail-label">Hospital:</span>
+                      <span className="detail-value">{donation.location}</span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Donation Date:</span>
+                      <span className="detail-value">
+                        {formatDate(donation.createdAt || donation.date)}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Donor:</span>
+                      <span className="detail-value">{donation.email}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="card-actions">
+                  <select
+                    value={donation.status}
+                    onChange={(e) => handleStatusChange(type, donation.id, e.target.value)}
+                    disabled={loading}
+                    className="status-select"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="accepted">Accepted</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.pageTitle}>Admin Dashboard</h2>
+    <div className="admin-container">
+      <header className="admin-header">
+        <h2>Admin Dashboard</h2>
+      </header>
+      
+      {error && <div className="error-message">{error}</div>}
+      
+      <div className="location-filter-container">
+        <label htmlFor="location-filter">Filter by Hospital:</label>
+        <select
+          id="location-filter"
+          value={selectedLocation}
+          onChange={(e) => setSelectedLocation(e.target.value)}
+          className="location-filter-select"
+        >
+          <option value="all">All Locations</option>
+          {getUniqueLocations().map(location => (
+            <option key={location} value={location}>{location}</option>
+          ))}
+        </select>
+      </div>
 
-      {error && <p style={styles.errorMessage}>{error}</p>}
-
-      {renderDonations('medicine', 'Medicine Donations')}
-      {renderDonations('equipment', 'Equipment Donations')}
+      <div className="dashboard-content">
+        {renderDonations('medicine', 'Medicine Donations')}
+        {renderDonations('equipment', 'Equipment Donations')}
+      </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    fontFamily: 'Arial, sans-serif',
-    margin: 0,
-    padding: 0,
-    backgroundColor: '#f4f4f4',
-    textAlign: 'center',
-  },
-  pageTitle: {
-    color: '#333',
-    marginTop: '20px',
-  },
-  errorMessage: {
-    color: 'red',
-    fontWeight: 'bold',
-    margin: '10px 0',
-  },
-  donationsContainer: {
-    marginTop: '30px',
-    padding: '20px',
-    backgroundColor: '#fff',
-    borderRadius: '8px',
-    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-    maxWidth: '1000px',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-  header: {
-    fontSize: '1.5em',
-    marginBottom: '15px',
-    color: '#555',
-  },
-  donationsList: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '20px',
-    justifyContent: 'center',
-    marginTop: '20px',
-  },
-  donationCard: {
-    backgroundColor: '#fff',
-    padding: '15px',
-    width: '250px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-    transition: 'transform 0.3s ease-in-out',
-  },
-  donationCardHover: {
-    transform: 'scale(1.05)',
-  },
-  select: {
-    width: '100%',
-    padding: '10px',
-    marginTop: '10px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    backgroundColor: '#f9f9f9',
-    fontSize: '14px',
-  },
-};
 
 export default Admin;

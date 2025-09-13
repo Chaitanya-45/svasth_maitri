@@ -1,74 +1,183 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Commstyle.css';
 
 function CommunityPage() {
     const [posts, setPosts] = useState([]);
+    const [formError, setFormError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Load posts from localStorage on initial render
+    useEffect(() => {
+        const savedPosts = localStorage.getItem('communityPosts');
+        if (savedPosts) {
+            setPosts(JSON.parse(savedPosts));
+        }
+    }, []);
+
+    // Save posts to localStorage whenever they change
+    useEffect(() => {
+        localStorage.setItem('communityPosts', JSON.stringify(posts));
+    }, [posts]);
 
     const addPost = (event) => {
         event.preventDefault();
+        setIsSubmitting(true);
+        setFormError('');
         
-        const title = event.target.title.value;
-        const author = event.target.author.value;
-        const content = event.target.content.value;
+        const title = event.target.title.value.trim();
+        const author = event.target.author.value.trim();
+        const content = event.target.content.value.trim();
 
         if (!title || !author || !content) {
-            alert("Please fill in all fields.");
+            setFormError("Please fill in all fields.");
+            setIsSubmitting(false);
             return;
         }
 
+        // Create a new post with timestamp and ID
+        const newPost = { 
+            id: Date.now(), 
+            title, 
+            author, 
+            content, 
+            date: new Date().toLocaleDateString(),
+            likes: 0
+        };
+
         // Add the new post to the list
-        setPosts([...posts, { title, author, content }]);
+        setPosts([newPost, ...posts]);
 
         // Clear the form
         event.target.reset();
+        setIsSubmitting(false);
+    };
+
+    const handleLike = (postId) => {
+        setPosts(posts.map(post => 
+            post.id === postId ? {...post, likes: post.likes + 1} : post
+        ));
+    };
+
+    const deletePost = (postId) => {
+        if (window.confirm('Are you sure you want to delete this post?')) {
+            setPosts(posts.filter(post => post.id !== postId));
+        }
     };
 
     return (
-        <div>
-            <section className="abheader">
-                <div className="abtext-box">
-                    <h1 style={{ paddingTop: '30px', fontSize: '50px' }}>Empowering Health: Our Community Hub</h1>
+        <div className="community-page">
+            <section className="community-header">
+                <div className="header-content">
+                    <h1>Empowering Health: Our Community Hub</h1>
+                    <p>Share your experiences, ask questions, and connect with others on their healthcare journey</p>
                 </div>
             </section>
 
-            <section className="add-post" style={{ textAlign: 'center' }}>
-                <h2>Add New Post</h2>
-                <form id="post-form" onSubmit={(event) => addPost(event)} style={{ maxWidth: '500px', margin: 'auto' }}>
-                    <div style={{ marginBottom: '10px' }}>
-                        <label htmlFor="post-title" style={{ display: 'block' }}>Title:</label>
-                        <input type="text" id="post-title" name="title" placeholder="Enter the post title" style={{ width: '100%', padding: '8px' }} />
-                    </div>
-                    <div style={{ marginBottom: '10px' }}>
-                        <label htmlFor="post-author" style={{ display: 'block' }}>Author:</label>
-                        <input type="text" id="post-author" name="author" placeholder="Enter your name" style={{ width: '100%', padding: '8px' }} />
-                    </div>
-                    <div style={{ marginBottom: '10px' }}>
-                        <label htmlFor="post-content" style={{ display: 'block' }}>Content:</label>
-                        <textarea id="post-content" name="content" placeholder="Write your post content here" style={{ width: '100%', height: '150px', padding: '8px' }}></textarea>
-                    </div>
-                    <div>
-                        <button type="submit" style={{ backgroundColor: '#88e2e8', color: 'white', padding: '10px 20px', border: 'none', cursor: 'pointer', borderRadius: '4px' }}>Add Post</button>
-                    </div>
-                </form>
-            </section>
-
-            <section className="blogs" id="new-post-section">
-                <br /><br />
-                {posts.length > 0 ? (
-                    posts.map((post, index) => (
-                        <div className="blog" id="new-post" key={index} style={{ marginBottom: '20px' }}>
-                            <h3>{post.title}</h3>
-                            <p><strong>Author:</strong> {post.author}</p>
-                            <p>{post.content}</p>
+            <div className="community-container">
+                <section className="add-post-section">
+                    <div className="form-card">
+                        <div className="form-header">
+                            <h2>Share Your Thoughts</h2>
+                            <p>Create a new post to share with the community</p>
                         </div>
-                    ))
-                ) : (
-                    <p>No posts yet.</p>
-                )}
-                <br />
-            </section>
+                        
+                        {formError && <div className="form-error">{formError}</div>}
+                        
+                        <form id="post-form" onSubmit={addPost}>
+                            <div className="form-group">
+                                <label htmlFor="post-title">Title</label>
+                                <input 
+                                    type="text" 
+                                    id="post-title" 
+                                    name="title" 
+                                    placeholder="What's your post about?" 
+                                />
+                            </div>
+                            
+                            <div className="form-group">
+                                <label htmlFor="post-author">Your Name</label>
+                                <input 
+                                    type="text" 
+                                    id="post-author" 
+                                    name="author" 
+                                    placeholder="How should we address you?" 
+                                />
+                            </div>
+                            
+                            <div className="form-group">
+                                <label htmlFor="post-content">Your Message</label>
+                                <textarea 
+                                    id="post-content" 
+                                    name="content" 
+                                    placeholder="Share your thoughts, questions, or experiences..." 
+                                    rows="5"
+                                ></textarea>
+                            </div>
+                            
+                            <button 
+                                type="submit" 
+                                className="submit-button"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? 'Posting...' : 'Post to Community'}
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <section className="posts-section">
+                    <div className="posts-header">
+                        <h2>Community Discussions</h2>
+                        <p>{posts.length} {posts.length === 1 ? 'post' : 'posts'} shared</p>
+                    </div>
+                    
+                    <div className="posts-container">
+                        {posts.length > 0 ? (
+                            posts.map((post) => (
+                                <div className="post-card" key={post.id}>
+                                    <div className="post-header">
+                                        <h3>{post.title}</h3>
+                                        <button 
+                                            className="delete-button" 
+                                            onClick={() => deletePost(post.id)}
+                                            aria-label="Delete post"
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="post-meta">
+                                        <span className="post-author">{post.author}</span>
+                                        <span className="post-date">{post.date}</span>
+                                    </div>
+                                    
+                                    <div className="post-content">
+                                        <p>{post.content}</p>
+                                    </div>
+                                    
+                                    <div className="post-actions">
+                                        <button 
+                                            className="like-button" 
+                                            onClick={() => handleLike(post.id)}
+                                        >
+                                            <span className="like-icon">❤️</span>
+                                            <span className="like-count">{post.likes}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="empty-state">
+                                <div className="empty-icon">💬</div>
+                                <h3>No posts yet</h3>
+                                <p>Be the first to share your thoughts with the community!</p>
+                            </div>
+                        )}
+                    </div>
+                </section>
+            </div>
         </div>
     );
 }
 
-export default CommunityPage;
+export default CommunityPage;
