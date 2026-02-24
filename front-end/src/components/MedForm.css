@@ -151,3 +151,111 @@
     color: #e53e3e;
     font-weight: 500;
   }
+
+  /* Add these new styles to your existing MedForm.css file */
+
+.message.warning {
+  background-color: #fff3e0;
+  color: #e65100;
+  border-left: 4px solid #ff9800;
+  padding: 10px 15px;
+  margin: 15px 0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.network-switch-button {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.network-switch-button:hover {
+  background-color: #f57c00;
+}
+
+.button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.button:disabled:hover {
+  background-color: #4361ee; /* Same as original color */
+  transform: none;
+  box-shadow: none;
+}
+
+/* Add these styles to your existing MedForm.css file */
+.demo-section {
+  margin-top: 1.5rem;
+  border-top: 1px dashed #e0e0e0;
+  padding-top: 1.5rem;
+  text-align: center;
+}
+
+.demo-button {
+  background-color: #7b61ff;
+  color: white;
+  width: auto;
+  margin: 0 auto;
+  display: inline-block;
+  padding: 12px 24px;
+}
+
+.demo-button:hover {
+  background-color: #6a4fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(123, 97, 255, 0.3);
+}
+
+.message {
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+}
+
+.message.error {
+  background-color: #ffebee;
+  color: #c62828;
+  border-left: 4px solid #f44336;
+}
+
+.message.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-left: 4px solid #4caf50;
+}
+
+.message.warning {
+  background-color: #fff3e0;
+  color: #e65100;
+  border-left: 4px solid #ff9800;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tx-hash {
+  font-family: monospace;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+}

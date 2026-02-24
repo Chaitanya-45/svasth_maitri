@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
+import { database } from './firebase/firebase';
 
 import BfrNavbar from "./components/BfrNavbar";
 import BfrBody from "./components/BfrBody";
@@ -26,6 +27,72 @@ import Emergency from "./components/Emergency";
 import Chatbot from "./components/Chatbot";
 import Admin from "./components/Admin";
 import AdminSetup from "./components/AdminSetup";
+import EmergencyHome from './components/EmergencyHome';
+import EmergencyDonate from './components/EmergencyDonate';
+import EmergencyRequest from './components/EmergencyRequest';
+
+// Emergency Banner Component
+const EmergencyBanner = () => {
+  const [emergencyActive, setEmergencyActive] = useState(false);
+  const [emergencyData, setEmergencyData] = useState(null);
+
+  useEffect(() => {
+    const checkEmergencyStatus = async () => {
+      try {
+        const disasterRef = database.ref('disasterMode');
+        const snapshot = await disasterRef.once('value');
+        const data = snapshot.val();
+        
+        if (data && data.active) {
+          setEmergencyActive(true);
+          setEmergencyData(data);
+        } else {
+          setEmergencyActive(false);
+          setEmergencyData(null);
+        }
+      } catch (error) {
+        console.error("Error checking emergency status:", error);
+      }
+    };
+    
+    checkEmergencyStatus();
+    
+    // Set up listener for real-time updates
+    const disasterRef = database.ref('disasterMode');
+    disasterRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (data && data.active) {
+        setEmergencyActive(true);
+        setEmergencyData(data);
+      } else {
+        setEmergencyActive(false);
+        setEmergencyData(null);
+      }
+    });
+    
+    return () => {
+      disasterRef.off(); // Clean up listener on unmount
+    };
+  }, []);
+
+  if (!emergencyActive || !emergencyData) {
+    return null;
+  }
+
+  return (
+    <div className="emergency-alert">
+      <div className="emergency-alert-content">
+        <div className="emergency-alert-icon">⚠️</div>
+        <div className="emergency-alert-text">
+          <strong>EMERGENCY:</strong> {emergencyData.description}
+        </div>
+        <a href="/emergency" className="emergency-alert-button">
+          Help Now
+        </a>
+      </div>
+    </div>
+  );
+};
 
 // Navigation wrapper based on auth status
 const Navigation = () => {
@@ -36,12 +103,18 @@ const Navigation = () => {
 function AppContent() {
   return (
     <div>
+      <EmergencyBanner />
       <Navigation />
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<BfrBody />} />
         <Route path="/Signup" element={<Signup />} />
         <Route path="/Login" element={<Login />} />
+        
+        {/* Emergency routes - these are accessible to anyone during a disaster */}
+        <Route path="/emergency" element={<EmergencyHome />} />
+        <Route path="/emergency/donate" element={<EmergencyDonate />} />
+        <Route path="/emergency/request" element={<EmergencyRequest />} />
         
         {/* Protected user routes */}
         <Route path="/aftrbody" element={
@@ -99,7 +172,7 @@ function AppContent() {
             <Volform />
           </ProtectedRoute>
         } />
-        <Route path="/Emergency" element={
+        <Route path="/volunteer-emergency" element={
           <ProtectedRoute>
             <Emergency />
           </ProtectedRoute>

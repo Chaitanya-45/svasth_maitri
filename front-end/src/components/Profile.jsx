@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-
 import { 
   Typography, 
   Paper, 
   Avatar, 
   Box, 
-  Divider, 
   Container,
   Grid,
   Card,
@@ -14,7 +12,6 @@ import {
   LinearProgress,
   Tabs,
   Tab,
-  Button,
   Tooltip,
   IconButton,
   Chip
@@ -41,7 +38,6 @@ import {
   DirectionsCarOutlined
 } from '@mui/icons-material';
 import { auth, database } from '../firebase/firebase';
-// Note: You'll need to run npm install recharts
 import { 
   PieChart, 
   Pie, 
@@ -100,10 +96,10 @@ const Profile = () => {
 
   // Function to get a random pastel color based on username
   const getAvatarColor = (username) => {
-    if (!username) return "#3498db";
+    if (!username) return "#4361ee";
     const colors = [
-      "#3498db", "#2ecc71", "#9b59b6", "#e74c3c", 
-      "#f39c12", "#1abc9c", "#34495e", "#d35400"
+      "#4361ee", "#3a0ca3", "#7209b7", "#f72585", 
+      "#4cc9f0", "#4895ef", "#560bad", "#f15bb5"
     ];
     const index = username.length % colors.length;
     return colors[index];
@@ -146,7 +142,6 @@ const Profile = () => {
         window.open(`https://wa.me/?text=${encodeURIComponent(message + ' ' + url)}`);
         break;
       case 'instagram':
-        // Instagram doesn't have a direct share link, this is just a placeholder
         alert('To share on Instagram, take a screenshot and upload it to your story or feed.');
         break;
       default:
@@ -237,7 +232,6 @@ const Profile = () => {
   };
 
   // Sample donation history data
-  // In a real app, this would come from the database
   const getDonationHistory = () => {
     return [
       { id: 1, type: 'medicine', name: 'Paracetamol', date: '2023-10-15', points: 10, carbon: 2.3 },
@@ -276,7 +270,7 @@ const Profile = () => {
     return { typeData, monthlyPoints, carbonData };
   };
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
+  const COLORS = ['#4361ee', '#48bb78', '#f56565'];
 
   const renderContent = () => {
     if (loading) {
@@ -314,11 +308,12 @@ const Profile = () => {
 
     return (
       <>
+        {/* Profile Header */}
         <Box sx={{ 
           display: 'flex', 
           flexDirection: { xs: 'column', md: 'row' }, 
           alignItems: { xs: 'center', md: 'flex-start' },
-          mb: 4,
+          mb: 5,
           gap: { xs: 3, md: 4 }
         }}>
           <Box sx={{ 
@@ -329,24 +324,24 @@ const Profile = () => {
           }}>
             <Avatar 
               sx={{ 
-                width: 150, 
-                height: 150, 
+                width: 120, 
+                height: 120, 
                 bgcolor: getAvatarColor(userData.username),
-                fontSize: '3rem',
+                fontSize: '2.5rem',
                 fontWeight: 'bold',
                 mb: 2,
-                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                border: '4px solid white'
+                boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+                border: '3px solid white'
               }}
             >
               {getInitials(userData.username)}
             </Avatar>
             
-            <Typography variant="h4" fontWeight="bold">
+            <Typography variant="h5" fontWeight="600" sx={{ mb: 0.5 }}>
               {userData.username}
             </Typography>
             
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Member since {joinDate}
             </Typography>
             
@@ -358,35 +353,38 @@ const Profile = () => {
                   top: 0,
                   right: -20,
                   backgroundColor: 'white',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                  '&:hover': { backgroundColor: '#f5f5f5' }
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                  '&:hover': { backgroundColor: '#f5f5f5' },
+                  width: 36,
+                  height: 36
                 }}
+                size="small"
               >
-                <Share />
+                <Share fontSize="small" />
               </IconButton>
             </Tooltip>
             
             {showShareOptions && (
               <Box sx={{ 
                 position: 'absolute',
-                top: 50,
+                top: 40,
                 right: -20,
                 backgroundColor: 'white',
-                borderRadius: 1,
-                boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+                borderRadius: 2,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
                 p: 1,
                 zIndex: 10
               }}>
-                <IconButton color="primary" onClick={() => shareProfile('facebook')}>
+                <IconButton size="small" color="primary" onClick={() => shareProfile('facebook')}>
                   <Facebook />
                 </IconButton>
-                <IconButton color="info" onClick={() => shareProfile('twitter')}>
+                <IconButton size="small" color="info" onClick={() => shareProfile('twitter')}>
                   <Twitter />
                 </IconButton>
-                <IconButton color="success" onClick={() => shareProfile('whatsapp')}>
+                <IconButton size="small" color="success" onClick={() => shareProfile('whatsapp')}>
                   <WhatsApp />
                 </IconButton>
-                <IconButton color="error" onClick={() => shareProfile('instagram')}>
+                <IconButton size="small" color="error" onClick={() => shareProfile('instagram')}>
                   <Instagram />
                 </IconButton>
               </Box>
@@ -397,13 +395,13 @@ const Profile = () => {
               display: 'flex', 
               alignItems: 'center', 
               mt: 1,
-              bgcolor: '#f0f7ff',
+              bgcolor: 'primary.50',
               borderRadius: '50px',
-              padding: '10px 20px',
-              boxShadow: '0 4px 12px rgba(49,130,206,0.15)'
+              padding: '8px 16px',
+              boxShadow: '0 2px 8px rgba(67, 97, 238, 0.12)'
             }}>
-              <EmojiEvents sx={{ color: '#3182ce', mr: 1 }} />
-              <Typography variant="h6" fontWeight="bold" color="primary">
+              <EmojiEvents sx={{ color: 'primary.main', mr: 1, fontSize: 20 }} />
+              <Typography variant="subtitle2" fontWeight="600" color="primary.main">
                 {points} Points
               </Typography>
             </Box>
@@ -412,47 +410,55 @@ const Profile = () => {
             <Box sx={{ 
               display: 'flex', 
               alignItems: 'center', 
-              mt: 2,
-              bgcolor: '#f0f9ee',
+              mt: 1.5,
+              bgcolor: 'success.50',
               borderRadius: '50px',
-              padding: '10px 20px',
-              boxShadow: '0 4px 12px rgba(72,187,120,0.15)'
+              padding: '8px 16px',
+              boxShadow: '0 2px 8px rgba(72, 187, 120, 0.12)'
             }}>
-              <ParkOutlined sx={{ color: '#48bb78', mr: 1 }} />
-              <Typography variant="h6" fontWeight="bold" color="success.main">
+              <ParkOutlined sx={{ color: 'success.main', mr: 1, fontSize: 20 }} />
+              <Typography variant="subtitle2" fontWeight="600" color="success.main">
                 {formatCarbon(carbonFootprint)} Saved
               </Typography>
             </Box>
           </Box>
           
+          {/* Right side cards */}
           <Box sx={{ 
             flex: 1,
             width: { xs: '100%', md: 'auto' }
           }}>
             {/* Donation Level Card */}
-            <Card elevation={3} sx={{ borderRadius: 3, overflow: 'hidden', mb: 3 }}>
+            <Card elevation={0} sx={{ 
+              borderRadius: 3, 
+              overflow: 'hidden', 
+              mb: 3,
+              border: '1px solid',
+              borderColor: 'divider'
+            }}>
               <Box sx={{ 
-                bgcolor: '#3182ce', 
+                bgcolor: 'primary.main', 
                 color: 'white',
-                p: 2,
+                py: 1.5,
+                px: 2,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 1
               }}>
-                <VolunteerActivism />
-                <Typography variant="h6" fontWeight="bold">
+                <VolunteerActivism fontSize="small" />
+                <Typography variant="subtitle1" fontWeight="600">
                   Donation Level: {level}
                 </Typography>
               </Box>
-              <CardContent>
+              <CardContent sx={{ p: 2.5 }}>
                 {nextLevel ? (
                   <>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                       <Typography variant="body2" color="text.secondary">
                         Progress to next level
                       </Typography>
-                      <Typography variant="body2" fontWeight="bold">
+                      <Typography variant="body2" fontWeight="600">
                         {points}/{nextLevel} Points
                       </Typography>
                     </Box>
@@ -460,20 +466,17 @@ const Profile = () => {
                       variant="determinate" 
                       value={progress}
                       sx={{ 
-                        height: 10, 
-                        borderRadius: 5,
-                        bgcolor: '#e2e8f0',
+                        height: 8, 
+                        borderRadius: 4,
+                        bgcolor: 'grey.100',
                         '& .MuiLinearProgress-bar': {
-                          bgcolor: '#3182ce'
+                          bgcolor: 'primary.main'
                         }
                       }}
                     />
-                    <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      <Typography variant="body2">
+                    <Box sx={{ mt: 1.5, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                      <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
                         <strong>Next milestone:</strong> {nextLevel - points} more points to reach {level === "Newcomer" ? "Helper" : level === "Helper" ? "Supporter" : level === "Supporter" ? "Champion" : "Lifesaver"} level
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Make more donations to earn points and reach higher levels!
                       </Typography>
                     </Box>
                   </>
@@ -486,16 +489,21 @@ const Profile = () => {
             </Card>
             
             {/* Latest Achievements */}
-            <Card elevation={2} sx={{ borderRadius: 3 }}>
-              <CardContent>
+            <Card elevation={0} sx={{ 
+              borderRadius: 3,
+              border: '1px solid',
+              borderColor: 'divider'
+            }}>
+              <CardContent sx={{ p: 2.5 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                  <Typography variant="h6" fontWeight="bold" color="primary">
+                  <Typography variant="subtitle1" fontWeight="600" color="primary.main">
                     Latest Achievements
                   </Typography>
                   <Chip 
                     label={`${unlockedAchievements.length}/${achievements.length}`} 
                     color="primary" 
                     size="small"
+                    sx={{ fontSize: '0.75rem', height: 24 }}
                   />
                 </Box>
                 
@@ -507,7 +515,7 @@ const Profile = () => {
                         label={achievement.title}
                         color="primary"
                         variant="outlined"
-                        sx={{ fontSize: '0.8rem' }}
+                        sx={{ fontSize: '0.75rem', height: 28 }}
                       />
                     </Tooltip>
                   ))}
@@ -526,7 +534,7 @@ const Profile = () => {
                         color="default"
                         size="small"
                         onClick={() => setTabValue(2)}
-                        sx={{ cursor: 'pointer' }}
+                        sx={{ cursor: 'pointer', fontSize: '0.75rem', height: 28 }}
                       />
                     </Tooltip>
                   )}
@@ -536,7 +544,8 @@ const Profile = () => {
           </Box>
         </Box>
 
-        <Box sx={{ width: '100%', mb: 4 }}>
+        {/* Tabs Section */}
+        <Box sx={{ width: '100%', mb: 3 }}>
           <Tabs
             value={tabValue}
             onChange={handleTabChange}
@@ -545,32 +554,41 @@ const Profile = () => {
             textColor="primary"
             indicatorColor="primary"
             sx={{ 
-              mb: 2, 
+              mb: 3, 
+              borderBottom: 1,
+              borderColor: 'divider',
               '& .MuiTab-root': {
                 fontWeight: 600,
                 textTransform: 'none',
-                fontSize: '1rem'
+                fontSize: '0.95rem',
+                minHeight: 48,
+                py: 1
               }
             }}
           >
-            <Tab icon={<Person />} iconPosition="start" label="Profile" />
-            <Tab icon={<BarChartIcon />} iconPosition="start" label="Donation Activity" />
-            <Tab icon={<EmojiEvents />} iconPosition="start" label="Achievements" />
-            <Tab icon={<ParkOutlined />} iconPosition="start" label="Environmental Impact" />
+            <Tab icon={<Person sx={{ fontSize: 20 }} />} iconPosition="start" label="Profile" />
+            <Tab icon={<BarChartIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Donation Activity" />
+            <Tab icon={<EmojiEvents sx={{ fontSize: 20 }} />} iconPosition="start" label="Achievements" />
+            <Tab icon={<ParkOutlined sx={{ fontSize: 20 }} />} iconPosition="start" label="Environmental Impact" />
           </Tabs>
           
           {/* Profile Tab */}
           {tabValue === 0 && (
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
-                <Card elevation={2} sx={{ height: '100%', borderRadius: 3 }}>
-                  <CardContent>
-                    <Typography variant="h6" fontWeight="bold" color="primary" gutterBottom>
+                <Card elevation={0} sx={{ 
+                  height: '100%', 
+                  borderRadius: 3,
+                  border: '1px solid',
+                  borderColor: 'divider'
+                }}>
+                  <CardContent sx={{ p: 2.5 }}>
+                    <Typography variant="subtitle1" fontWeight="600" color="primary.main" gutterBottom>
                       Personal Information
                     </Typography>
                     
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 3 }}>
-                      <Person color="primary" sx={{ mr: 2 }} />
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 2.5 }}>
+                      <Person color="primary" sx={{ mr: 2, fontSize: 20 }} />
                       <Box>
                         <Typography variant="body2" color="text.secondary">Full Name</Typography>
                         <Typography variant="body1">{userData.username}</Typography>
@@ -578,7 +596,7 @@ const Profile = () => {
                     </Box>
                     
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Email color="primary" sx={{ mr: 2 }} />
+                      <Email color="primary" sx={{ mr: 2, fontSize: 20 }} />
                       <Box>
                         <Typography variant="body2" color="text.secondary">Email Address</Typography>
                         <Typography variant="body1">{userData.email}</Typography>
@@ -586,7 +604,7 @@ const Profile = () => {
                     </Box>
                     
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Phone color="primary" sx={{ mr: 2 }} />
+                      <Phone color="primary" sx={{ mr: 2, fontSize: 20 }} />
                       <Box>
                         <Typography variant="body2" color="text.secondary">Phone Number</Typography>
                         <Typography variant="body1">{userData.phoneNumber || 'Not provided'}</Typography>
@@ -597,14 +615,19 @@ const Profile = () => {
               </Grid>
               
               <Grid item xs={12} md={6}>
-                <Card elevation={2} sx={{ height: '100%', borderRadius: 3 }}>
-                  <CardContent>
-                    <Typography variant="h6" fontWeight="bold" color="primary" gutterBottom>
+                <Card elevation={0} sx={{ 
+                  height: '100%', 
+                  borderRadius: 3,
+                  border: '1px solid',
+                  borderColor: 'divider'
+                }}>
+                  <CardContent sx={{ p: 2.5 }}>
+                    <Typography variant="subtitle1" fontWeight="600" color="primary.main" gutterBottom>
                       Account Information
                     </Typography>
                     
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 3 }}>
-                      <CalendarToday color="primary" sx={{ mr: 2 }} />
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 2.5 }}>
+                      <CalendarToday color="primary" sx={{ mr: 2, fontSize: 20 }} />
                       <Box>
                         <Typography variant="body2" color="text.secondary">Join Date</Typography>
                         <Typography variant="body1">{joinDate}</Typography>
@@ -613,7 +636,7 @@ const Profile = () => {
                     
                     {userData.role && (
                       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                        <Person color="primary" sx={{ mr: 2 }} />
+                        <Person color="primary" sx={{ mr: 2, fontSize: 20 }} />
                         <Box>
                           <Typography variant="body2" color="text.secondary">Role</Typography>
                           <Typography variant="body1" sx={{ textTransform: 'capitalize' }}>
@@ -624,7 +647,7 @@ const Profile = () => {
                     )}
                     
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <EmojiEvents color="primary" sx={{ mr: 2 }} />
+                      <EmojiEvents color="primary" sx={{ mr: 2, fontSize: 20 }} />
                       <Box>
                         <Typography variant="body2" color="text.secondary">Total Donations</Typography>
                         <Typography variant="body1">
@@ -634,7 +657,7 @@ const Profile = () => {
                     </Box>
                     
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <ParkOutlined color="success" sx={{ mr: 2 }} />
+                      <ParkOutlined color="success" sx={{ mr: 2, fontSize: 20 }} />
                       <Box>
                         <Typography variant="body2" color="text.secondary">Carbon Footprint Reduced</Typography>
                         <Typography variant="body1">
@@ -648,15 +671,21 @@ const Profile = () => {
               
               {/* Environmental Impact Summary Card */}
               <Grid item xs={12}>
-                <Card elevation={2} sx={{ borderRadius: 3, mt: 3, bgcolor: '#f4fbf3' }}>
-                  <CardContent>
-                    <Typography variant="h6" fontWeight="bold" color="success.main" gutterBottom>
-                      <ParkOutlined sx={{ mr: 1, verticalAlign: 'middle' }} />
+                <Card elevation={0} sx={{ 
+                  borderRadius: 3,
+                  mt: 1,
+                  bgcolor: 'success.50',
+                  border: '1px solid',
+                  borderColor: 'success.100'
+                }}>
+                  <CardContent sx={{ p: 2.5 }}>
+                    <Typography variant="subtitle1" fontWeight="600" color="success.700" gutterBottom>
+                      <ParkOutlined sx={{ mr: 1, verticalAlign: 'text-bottom', fontSize: 20 }} />
                       Your Environmental Impact
                     </Typography>
                     
                     <Box sx={{ mt: 2 }}>
-                      <Typography variant="body1" gutterBottom>
+                      <Typography variant="body2" gutterBottom>
                         Through your donations, you've reduced carbon emissions by <strong>{formatCarbon(carbonFootprint)}</strong>!
                       </Typography>
                       
@@ -664,7 +693,7 @@ const Profile = () => {
                         <Typography variant="body2" color="text.secondary" gutterBottom>
                           This is equivalent to:
                         </Typography>
-                        <Grid container spacing={2} sx={{ mt: 1 }}>
+                        <Grid container spacing={2} sx={{ mt: 0.5 }}>
                           <Grid item xs={12} sm={4}>
                             <Box sx={{ 
                               display: 'flex', 
@@ -673,13 +702,15 @@ const Profile = () => {
                               bgcolor: 'white',
                               p: 2,
                               borderRadius: 2,
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                              boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
+                              border: '1px solid',
+                              borderColor: 'divider'
                             }}>
-                              <DirectionsCarOutlined color="primary" sx={{ fontSize: '2.5rem', mb: 1 }} />
-                              <Typography variant="h6" fontWeight="bold" color="primary.main">
+                              <DirectionsCarOutlined color="primary" sx={{ fontSize: '2rem', mb: 1 }} />
+                              <Typography variant="subtitle2" fontWeight="600" color="primary.main">
                                 {Math.round(carbonFootprint * 2.5)} miles
                               </Typography>
-                              <Typography variant="body2" color="text.secondary" align="center">
+                              <Typography variant="body2" color="text.secondary" align="center" sx={{ fontSize: '0.8rem' }}>
                                 of car travel avoided
                               </Typography>
                             </Box>
@@ -692,13 +723,15 @@ const Profile = () => {
                               bgcolor: 'white',
                               p: 2,
                               borderRadius: 2,
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                              boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
+                              border: '1px solid',
+                              borderColor: 'divider'
                             }}>
-                              <NatureOutlined color="success" sx={{ fontSize: '2.5rem', mb: 1 }} />
-                              <Typography variant="h6" fontWeight="bold" color="success.main">
+                              <NatureOutlined color="success" sx={{ fontSize: '2rem', mb: 1 }} />
+                              <Typography variant="subtitle2" fontWeight="600" color="success.main">
                                 {Math.round(carbonFootprint / 21)} trees
                               </Typography>
-                              <Typography variant="body2" color="text.secondary" align="center">
+                              <Typography variant="body2" color="text.secondary" align="center" sx={{ fontSize: '0.8rem' }}>
                                 worth of annual CO₂ absorption
                               </Typography>
                             </Box>
@@ -711,13 +744,15 @@ const Profile = () => {
                               bgcolor: 'white',
                               p: 2,
                               borderRadius: 2,
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                              boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
+                              border: '1px solid',
+                              borderColor: 'divider'
                             }}>
-                              <LightbulbOutlined color="warning" sx={{ fontSize: '2.5rem', mb: 1 }} />
-                              <Typography variant="h6" fontWeight="bold" color="warning.main">
+                              <LightbulbOutlined color="warning" sx={{ fontSize: '2rem', mb: 1 }} />
+                              <Typography variant="subtitle2" fontWeight="600" color="warning.main">
                                 {Math.round(carbonFootprint * 33)} hours
                               </Typography>
-                              <Typography variant="body2" color="text.secondary" align="center">
+                              <Typography variant="body2" color="text.secondary" align="center" sx={{ fontSize: '0.8rem' }}>
                                 of LED bulb usage
                               </Typography>
                             </Box>
@@ -736,12 +771,17 @@ const Profile = () => {
             <>
               <Grid container spacing={3} sx={{ mb: 3 }}>
                 <Grid item xs={12} md={6}>
-                  <Card elevation={2} sx={{ height: '100%', borderRadius: 3 }}>
-                    <CardContent>
-                      <Typography variant="h6" fontWeight="bold" color="primary" gutterBottom>
+                  <Card elevation={0} sx={{ 
+                    height: '100%', 
+                    borderRadius: 3,
+                    border: '1px solid',
+                    borderColor: 'divider'
+                  }}>
+                    <CardContent sx={{ p: 2.5 }}>
+                      <Typography variant="subtitle1" fontWeight="600" color="primary.main" gutterBottom>
                         Donation by Type
                       </Typography>
-                      <Box sx={{ height: 250, width: '100%' }}>
+                      <Box sx={{ height: 240, width: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
@@ -765,19 +805,24 @@ const Profile = () => {
                 </Grid>
                 
                 <Grid item xs={12} md={6}>
-                  <Card elevation={2} sx={{ height: '100%', borderRadius: 3 }}>
-                    <CardContent>
-                      <Typography variant="h6" fontWeight="bold" color="primary" gutterBottom>
+                  <Card elevation={0} sx={{ 
+                    height: '100%', 
+                    borderRadius: 3,
+                    border: '1px solid',
+                    borderColor: 'divider'
+                  }}>
+                    <CardContent sx={{ p: 2.5 }}>
+                      <Typography variant="subtitle1" fontWeight="600" color="primary.main" gutterBottom>
                         Points Earned by Month
                       </Typography>
-                      <Box sx={{ height: 250, width: '100%' }}>
+                      <Box sx={{ height: 240, width: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={monthlyPoints}>
-                            <CartesianGrid strokeDasharray="3 3" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                             <XAxis dataKey="name" />
                             <YAxis />
                             <RechartsTooltip />
-                            <Bar dataKey="points" fill="#3182ce" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="points" fill="#4361ee" radius={[4, 4, 0, 0]} />
                           </BarChart>
                         </ResponsiveContainer>
                       </Box>
@@ -786,9 +831,13 @@ const Profile = () => {
                 </Grid>
               </Grid>
               
-              <Card elevation={2} sx={{ borderRadius: 3 }}>
-                <CardContent>
-                  <Typography variant="h6" fontWeight="bold" color="primary" gutterBottom>
+              <Card elevation={0} sx={{ 
+                borderRadius: 3,
+                border: '1px solid',
+                borderColor: 'divider'
+              }}>
+                <CardContent sx={{ p: 2.5 }}>
+                  <Typography variant="subtitle1" fontWeight="600" color="primary.main" gutterBottom>
                     Donation History
                   </Typography>
                   
@@ -807,15 +856,15 @@ const Profile = () => {
                           }}
                         >
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            {donation.type === 'medicine' && <LocalHospital color="primary" sx={{ mr: 2 }} />}
-                            {donation.type === 'blood' && <Favorite color="error" sx={{ mr: 2 }} />}
-                            {donation.type === 'equipment' && <Inventory color="success" sx={{ mr: 2 }} />}
+                            {donation.type === 'medicine' && <LocalHospital color="primary" sx={{ mr: 2, fontSize: 20 }} />}
+                            {donation.type === 'blood' && <Favorite color="error" sx={{ mr: 2, fontSize: 20 }} />}
+                            {donation.type === 'equipment' && <Inventory color="success" sx={{ mr: 2, fontSize: 20 }} />}
                             
                             <Box>
-                              <Typography variant="body1" fontWeight="medium">
+                              <Typography variant="body2" fontWeight="medium">
                                 {donation.name}
                               </Typography>
-                              <Typography variant="body2" color="text.secondary">
+                              <Typography variant="caption" color="text.secondary">
                                 {new Date(donation.date).toLocaleDateString('en-US', { 
                                   year: 'numeric', 
                                   month: 'long', 
@@ -828,26 +877,28 @@ const Profile = () => {
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <Tooltip title="Carbon footprint reduced">
                               <Chip 
-                                icon={<ParkOutlined fontSize="small" />}
+                                icon={<ParkOutlined sx={{ fontSize: '0.75rem' }} />}
                                 label={`${donation.carbon} kg CO₂e`} 
                                 color="success" 
                                 size="small" 
                                 variant="outlined" 
+                                sx={{ fontSize: '0.75rem', height: 24 }}
                               />
                             </Tooltip>
                             <Chip 
-                              label={`+${donation.points} points`} 
+                              label={`+${donation.points} pts`} 
                               color="primary" 
                               size="small" 
                               variant="outlined" 
+                              sx={{ fontSize: '0.75rem', height: 24 }}
                             />
                           </Box>
                         </Box>
                       ))}
                     </Box>
                   ) : (
-                    <Box sx={{ textAlign: 'center', py: 4 }}>
-                      <Typography variant="body1" color="text.secondary">
+                    <Box sx={{ textAlign: 'center', py: 3 }}>
+                      <Typography variant="body2" color="text.secondary">
                         No donation history available.
                       </Typography>
                     </Box>
@@ -859,16 +910,21 @@ const Profile = () => {
           
           {/* Achievements Tab */}
           {tabValue === 2 && (
-            <Card elevation={2} sx={{ borderRadius: 3 }}>
-              <CardContent>
+            <Card elevation={0} sx={{ 
+              borderRadius: 3,
+              border: '1px solid',
+              borderColor: 'divider'
+            }}>
+              <CardContent sx={{ p: 2.5 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                  <Typography variant="h6" fontWeight="bold" color="primary">
+                  <Typography variant="subtitle1" fontWeight="600" color="primary.main">
                     Your Achievements
                   </Typography>
                   <Chip 
                     label={`${unlockedAchievements.length}/${achievements.length} Unlocked`} 
                     color="primary" 
                     size="small"
+                    sx={{ fontSize: '0.75rem', height: 24 }}
                   />
                 </Box>
                 
@@ -876,16 +932,16 @@ const Profile = () => {
                   {achievements.map((achievement) => (
                     <Grid item xs={12} sm={6} md={4} key={achievement.id}>
                       <Card 
-                        elevation={achievement.unlocked ? 1 : 0}
+                        elevation={0}
                         sx={{ 
                           p: 2, 
                           height: '100%', 
                           display: 'flex', 
                           flexDirection: 'column',
-                          opacity: achievement.unlocked ? 1 : 0.6,
-                          bgcolor: achievement.unlocked ? 'white' : '#f5f5f5',
+                          opacity: achievement.unlocked ? 1 : 0.7,
+                          bgcolor: achievement.unlocked ? 'white' : '#f9f9f9',
                           border: 1,
-                          borderColor: achievement.unlocked ? 'primary.light' : 'grey.300',
+                          borderColor: achievement.unlocked ? 'primary.200' : 'grey.200',
                           borderRadius: 2
                         }}
                       >
@@ -899,25 +955,25 @@ const Profile = () => {
                         >
                           <Box 
                             sx={{ 
-                              width: 40, 
-                              height: 40, 
+                              width: 32, 
+                              height: 32, 
                               borderRadius: '50%',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               mr: 1.5,
-                              bgcolor: achievement.unlocked ? 'primary.light' : 'grey.200',
-                              color: achievement.unlocked ? 'white' : 'grey.500'
+                              bgcolor: achievement.unlocked ? 'primary.100' : 'grey.100',
+                              color: achievement.unlocked ? 'primary.main' : 'grey.500'
                             }}
                           >
                             {achievement.icon}
                           </Box>
-                          <Typography variant="subtitle1" fontWeight="bold">
+                          <Typography variant="body2" fontWeight="600" fontSize="0.9rem">
                             {achievement.title}
                           </Typography>
                         </Box>
                         
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ mb: 1, fontSize: '0.8rem' }}>
                           {achievement.description}
                         </Typography>
                         
@@ -931,6 +987,7 @@ const Profile = () => {
                             size="small"
                             color={achievement.unlocked ? "success" : "default"}
                             variant={achievement.unlocked ? "filled" : "outlined"}
+                            sx={{ fontSize: '0.7rem', height: 22 }}
                           />
                         </Box>
                       </Card>
@@ -944,74 +1001,102 @@ const Profile = () => {
           {/* Environmental Impact Tab */}
           {tabValue === 3 && (
             <>
-              <Card elevation={2} sx={{ borderRadius: 3, mb: 3 }}>
-                <CardContent>
-                  <Typography variant="h6" fontWeight="bold" color="success.main" gutterBottom>
+              <Card elevation={0} sx={{ 
+                borderRadius: 3, 
+                mb: 3,
+                border: '1px solid',
+                borderColor: 'divider'
+              }}>
+                <CardContent sx={{ p: 2.5 }}>
+                  <Typography variant="subtitle1" fontWeight="600" color="success.main" gutterBottom>
                     Carbon Footprint Reduction
                   </Typography>
                   <Box sx={{ height: 250, width: '100%', mb: 3 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={carbonData}>
-                        <CartesianGrid strokeDasharray="3 3" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         <XAxis dataKey="name" />
                         <YAxis label={{ value: 'kg CO₂e', angle: -90, position: 'insideLeft' }} />
                         <RechartsTooltip 
                           formatter={(value) => [`${value.toFixed(2)} kg CO₂e`, 'Carbon Reduction']} 
                         />
-                        <Bar dataKey="reduction" fill="#4caf50" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="reduction" fill="#48bb78" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </Box>
                   
-                  <Typography variant="body1" gutterBottom>
+                  <Typography variant="body2" gutterBottom>
                     Your donations have saved a total of <strong>{formatCarbon(carbonFootprint)}</strong> of carbon emissions!
                   </Typography>
                   
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
                     Every donation helps reduce waste from medical products and contributes to a more sustainable healthcare system.
                   </Typography>
                 </CardContent>
               </Card>
               
-              <Card elevation={2} sx={{ borderRadius: 3, mt: 3, bgcolor: '#f4fbf3' }}>
-                <CardContent>
-                  <Typography variant="h6" fontWeight="bold" color="success.main" gutterBottom>
+              <Card elevation={0} sx={{ 
+                borderRadius: 3, 
+                bgcolor: 'success.50',
+                border: '1px solid',
+                borderColor: 'success.100'
+              }}>
+                <CardContent sx={{ p: 2.5 }}>
+                  <Typography variant="subtitle1" fontWeight="600" color="success.700" gutterBottom>
                     Environmental Facts
                   </Typography>
                   
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="body1" gutterBottom>
+                  <Box sx={{ mt: 1.5 }}>
+                    <Typography variant="body2" gutterBottom fontWeight="500">
                       Did you know?
                     </Typography>
                     
-                    <Box sx={{ mt: 2 }}>
+                    <Box sx={{ mt: 1.5 }}>
                       <Grid container spacing={2}>
                         <Grid item xs={12} md={4}>
-                          <Card sx={{ p: 2 }}>
-                            <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                          <Card elevation={0} sx={{ 
+                            p: 2, 
+                            height: '100%',
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            bgcolor: 'white'
+                          }}>
+                            <Typography variant="subtitle2" fontWeight="600" gutterBottom>
                               Medical waste impact
                             </Typography>
-                            <Typography variant="body2">
+                            <Typography variant="body2" sx={{ fontSize: '0.85rem' }}>
                               Healthcare accounts for 4.4% of global net emissions, equivalent to the annual output of 514 coal-fired power plants.
                             </Typography>
                           </Card>
                         </Grid>
                         <Grid item xs={12} md={4}>
-                          <Card sx={{ p: 2 }}>
-                            <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                          <Card elevation={0} sx={{ 
+                            p: 2, 
+                            height: '100%',
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            bgcolor: 'white'
+                          }}>
+                            <Typography variant="subtitle2" fontWeight="600" gutterBottom>
                               Medicine disposal
                             </Typography>
-                            <Typography variant="body2">
+                            <Typography variant="body2" sx={{ fontSize: '0.85rem' }}>
                               Improper disposal of medications contributes to water pollution. Donating unused medicine reduces pharmaceutical waste.
                             </Typography>
                           </Card>
                         </Grid>
                         <Grid item xs={12} md={4}>
-                          <Card sx={{ p: 2 }}>
-                            <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                          <Card elevation={0} sx={{ 
+                            p: 2, 
+                            height: '100%',
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            bgcolor: 'white'
+                          }}>
+                            <Typography variant="subtitle2" fontWeight="600" gutterBottom>
                               Equipment reuse
                             </Typography>
-                            <Typography variant="body2">
+                            <Typography variant="body2" sx={{ fontSize: '0.85rem' }}>
                               Medical equipment reuse can reduce manufacturing emissions by up to 45% compared to producing new equipment.
                             </Typography>
                           </Card>
@@ -1029,13 +1114,15 @@ const Profile = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
       <Paper 
-        elevation={3} 
+        elevation={0} 
         sx={{ 
-          p: { xs: 2, sm: 4 }, 
+          p: { xs: 2, sm: 3 }, 
           borderRadius: 3,
-          background: 'linear-gradient(to bottom, #ffffff, #f9f9f9)'
+          background: 'white',
+          border: '1px solid',
+          borderColor: 'divider'
         }}
       >
         {renderContent()}

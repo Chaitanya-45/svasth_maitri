@@ -54,6 +54,7 @@ function Article() {
          </section>
 
          <div className="articles-container">
+            
             <div className="articles-grid">
                {articleData.map((article) => (
                   <Link to={article.path} className="article-card" key={article.id}>

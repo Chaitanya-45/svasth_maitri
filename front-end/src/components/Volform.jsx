@@ -48,7 +48,7 @@ function Volform() {
 
       const result = await response.json();
       if (response.ok) {
-        navigate('/Emergency'); 
+        navigate('/volunteer-emergency'); 
       } else {
         setErrorMessage(result.error || 'Failed to submit volunteer.');
       }

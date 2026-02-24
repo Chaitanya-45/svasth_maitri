@@ -1,1 +1,14 @@
 node_modules/
+
+# Environment and secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Firebase service account keys
+**/*firebase-adminsdk*.json
+**/firebase-service-account.json
+
+# Runtime uploads and local artifacts
+back-end/uploads/
+uploads/

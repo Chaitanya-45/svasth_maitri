@@ -40,3 +40,44 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Add to your App.css */
+.emergency-alert {
+  background-color: #dc3545;
+  color: white;
+  padding: 10px 0;
+  position: relative;
+  z-index: 100;
+}
+
+.emergency-alert-content {
+  display: flex;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.emergency-alert-icon {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.emergency-alert-text {
+  flex: 1;
+}
+
+.emergency-alert-button {
+  background-color: white;
+  color: #dc3545;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 15px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.emergency-nav-link {
+  color: #dc3545 !important;
+  font-weight: bold;
+}

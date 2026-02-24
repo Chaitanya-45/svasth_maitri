@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { database } from '../firebase/firebase';
-import { Card, CardContent, Typography, TextField, Button, Box, List, ListItem } from '@mui/material';
+import './AdminSetup.css';
 
 function AdminSetup() {
   const [adminEmail, setAdminEmail] = useState('');
@@ -83,86 +83,76 @@ function AdminSetup() {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 2 }}>
-      <Card>
-        <CardContent>
-          <Typography variant="h5" component="h2" gutterBottom>
-            Admin User Management
-          </Typography>
-          
+    <div className="admin-setup-container">
+      <div className="navbar-spacer"></div>
+      <div className="admin-setup-content">
+        <h2>Admin User Management</h2>
+        
+        <div className="admin-form-card">
+          <h3>Add New Admin</h3>
           <form onSubmit={addAdmin}>
-            <TextField
-              label="Admin Email"
-              type="email"
-              fullWidth
-              margin="normal"
-              value={adminEmail}
-              onChange={(e) => setAdminEmail(e.target.value)}
-            />
+            <div className="input-group">
+              <label htmlFor="adminEmail">Admin Email</label>
+              <input
+                id="adminEmail"
+                type="email"
+                value={adminEmail}
+                onChange={(e) => setAdminEmail(e.target.value)}
+                placeholder="Enter email address"
+                required
+              />
+            </div>
             
-            <TextField
-              label="Admin Name"
-              fullWidth
-              margin="normal"
-              value={adminName}
-              onChange={(e) => setAdminName(e.target.value)}
-            />
+            <div className="input-group">
+              <label htmlFor="adminName">Admin Name</label>
+              <input
+                id="adminName"
+                type="text"
+                value={adminName}
+                onChange={(e) => setAdminName(e.target.value)}
+                placeholder="Enter admin name"
+                required
+              />
+            </div>
             
-            <Button 
-              type="submit"
-              variant="contained" 
-              color="primary"
-              fullWidth
-              sx={{ mt: 2 }}
-            >
+            <button type="submit" className="add-admin-btn">
               Add Admin
-            </Button>
+            </button>
           </form>
           
           {message && (
-            <Typography 
-              color={message.includes('success') ? 'success.main' : 'error'}
-              sx={{ mt: 2 }}
-            >
+            <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
               {message}
-            </Typography>
+            </div>
           )}
-          
-          <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
-            Current Admins
-          </Typography>
+        </div>
+        
+        <div className="admin-list-card">
+          <h3>Current Admins</h3>
           
           {admins.length === 0 ? (
-            <Typography>No admins found</Typography>
+            <p className="no-admins">No admins found</p>
           ) : (
-            <List>
+            <ul className="admin-list">
               {admins.map((admin) => (
-                <ListItem 
-                  key={admin.id}
-                  secondaryAction={
-                    <Button 
-                      color="error" 
-                      onClick={() => removeAdmin(admin.id)}
-                      size="small"
-                    >
-                      Remove
-                    </Button>
-                  }
-                  divider
-                >
-                  <Box>
-                    <Typography variant="body1">{admin.name}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {admin.email}
-                    </Typography>
-                  </Box>
-                </ListItem>
+                <li key={admin.id} className="admin-item">
+                  <div className="admin-info">
+                    <span className="admin-name">{admin.name}</span>
+                    <span className="admin-email">{admin.email}</span>
+                  </div>
+                  <button 
+                    className="remove-admin-btn"
+                    onClick={() => removeAdmin(admin.id)}
+                  >
+                    Remove
+                  </button>
+                </li>
               ))}
-            </List>
+            </ul>
           )}
-        </CardContent>
-      </Card>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,110 +1,113 @@
-import React, { useState, useRef, useEffect } from 'react';
-import './Chatbot.css'; // Import your updated chatbot CSS here
-
+import React, { useState, useEffect, useRef } from 'react';
+import './Chatbot.css';
 
 const Chatbot = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [userMessage, setUserMessage] = useState('');
-  const chatboxRef = useRef(null);
-  const inputRef = useRef(null);
+  const [isChatboxOpen, setChatboxOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    { text: "Hi! How can I help you today?", type: "incoming" }
+  ]);
+  const [userInput, setUserInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null);
 
-  const toggleChatbot = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleChat = async () => {
-    const trimmedMessage = userMessage.trim();
-    if (!trimmedMessage) return;
-
-    setUserMessage('');
-    setMessages([...messages, { text: trimmedMessage, type: 'outgoing' }]);
-
-    if (chatboxRef.current) {
-      chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
-    }
-
-    setMessages([...messages, { text: trimmedMessage, type: 'outgoing' }, { text: 'Thinking...', type: 'incoming' }]);
-
-    const response = await generateResponse(trimmedMessage);
-    setMessages([...messages, { text: trimmedMessage, type: 'outgoing' }, { text: response, type: 'incoming' }]);
-  };
-
-  const generateResponse = async (message) => {
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: [{ role: 'user', content: message }],
-        }),
-      });
-
-      const data = await response.json();
-      return data.choices[0].message.content.trim();
-    } catch {
-      return 'Oops! Something went wrong. Please try again.';
-    }
-  };
-
+  // Scroll to bottom whenever messages change
   useEffect(() => {
-    if (chatboxRef.current) {
-      chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
+  const toggleChatbox = () => {
+    setChatboxOpen(!isChatboxOpen);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!userInput.trim()) return;
+    
+    // Add user message
+    setMessages(prev => [...prev, { text: userInput, type: "outgoing" }]);
+    
+    // Clear input
+    setUserInput("");
+    
+    // Show bot is typing
+    setIsTyping(true);
+    
+    try {
+      // Simulate API call - replace with your actual API call
+      setTimeout(() => {
+        // Add response message
+        setMessages(prev => [...prev, { 
+          text: "Thank you for your message. How else can I assist you?", 
+          type: "incoming" 
+        }]);
+        setIsTyping(false);
+      }, 1500);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setMessages(prev => [...prev, { 
+        text: "Oops! Something went wrong. Please try again.", 
+        type: "incoming" 
+      }]);
+      setIsTyping(false);
+    }
+  };
+
   return (
-    <div className={`chatbot ${isOpen ? 'open' : ''}`}>
-      <button className="chatbot-toggler" onClick={toggleChatbot}>
-        <span className="material-symbols-rounded">
-          {isOpen ? '' : 'chat'}
-        </span>
-      </button>
-      {isOpen && (
-        <div className="chatbox" ref={chatboxRef}>
+    <div className="chatbot">
+      {isChatboxOpen && (
+        <div className="chatbox">
           <header>
             <h2>Chatbot</h2>
-            <span className="close-btn" onClick={toggleChatbot}>
-              <span className="material-symbols-outlined">close</span>
-            </span>
+            <span className="close-btn" onClick={toggleChatbox}></span>
           </header>
+          
           <ul className="chat-messages">
             {messages.map((msg, index) => (
               <li key={index} className={`chat ${msg.type}`}>
-                {msg.type === 'incoming' && (
-                  <span className="material-symbols-outlined">
-                    <i className="fa-regular fa-paper-plane"></i>
-                  </span>
+                {msg.text}
+                {msg.type === "outgoing" && (
+                  <div className="message-actions">
+                    <button className="action-btn wrong">Mark as wrong</button>
+                    <button className="action-btn delete">Delete</button>
+                  </div>
                 )}
-                <p>{msg.text}</p>
               </li>
             ))}
+            
+            {isTyping && (
+              <li className="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+              </li>
+            )}
+            <div ref={messagesEndRef} />
           </ul>
-          <div className="chat-input">
-            <textarea
-              ref={inputRef}
+          
+          <form className="chat-input" onSubmit={handleSubmit}>
+            <textarea 
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
               placeholder="Enter a message..."
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
+              rows="1"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
-                  handleChat();
+                  handleSubmit(e);
                 }
               }}
-            ></textarea>
-            <span
-              className="send-btn"
-              onClick={handleChat}
-            >
-              <span className="material-symbols-rounded">send</span>
-            </span>
-          </div>
+            />
+            <button type="submit" className="send-btn"></button>
+          </form>
         </div>
       )}
+      
+      <button className="chatbot-toggler" onClick={toggleChatbox}>
+        {isChatboxOpen ? "×" : "?"}
+      </button>
     </div>
   );
 };

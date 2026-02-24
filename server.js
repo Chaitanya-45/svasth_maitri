@@ -1,14 +1,24 @@
 const express = require('express');
+require('dotenv').config();
 const firebaseAdmin = require('firebase-admin');
 const cors = require('cors');
 const multer = require('multer');
 const pdfParse = require('pdf-parse');
 const fs = require('fs');
 const cron = require('node-cron');
+const path = require('path');
 
 const app = express();
 
-const serviceAccount = require('./svasthmaitri-firebase-adminsdk.json');
+const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH
+  ? path.resolve(process.cwd(), process.env.FIREBASE_SERVICE_ACCOUNT_PATH)
+  : path.resolve(__dirname, 'firebase-service-account.json');
+
+if (!fs.existsSync(serviceAccountPath)) {
+  throw new Error(`Firebase service account file not found at: ${serviceAccountPath}`);
+}
+
+const serviceAccount = require(serviceAccountPath);
 firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert(serviceAccount),
   databaseURL: 'https://svasthmaitri-default-rtdb.firebaseio.com/',

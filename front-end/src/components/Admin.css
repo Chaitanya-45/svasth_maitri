@@ -1,236 +1,620 @@
-/* Admin Dashboard Styles */
 .admin-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 1.5rem;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #333;
   background-color: #f8f9fa;
-  min-height: 100vh;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 }
 
 .admin-header {
-  margin-bottom: 30px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #eaeaea;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e1e4e8;
 }
 
 .admin-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
   color: #2c3e50;
-  font-size: 28px;
   margin: 0;
-  font-weight: 600;
 }
 
-.dashboard-content {
+.wallet-status {
   display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-.donations-container {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  padding: 25px;
-  overflow: hidden;
-}
-
-.section-header {
-  font-size: 20px;
-  color: #3498db;
-  margin-top: 0;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #f0f0f0;
-}
-
-.donations-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
-}
-
-.donation-card {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: 1px solid #f0f0f0;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.donation-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-  padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #eee;
-}
-
-.card-header h4 {
-  margin: 0;
-  font-size: 17px;
-  color: #333;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 65%;
-}
-
-.status-badge {
-  padding: 4px 10px;
-  border-radius: 50px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-
-.status-badge.pending {
-  background-color: #fef6e7;
-  color: #f39c12;
-}
-
-.status-badge.accepted {
-  background-color: #e7f4e8;
-  color: #27ae60;
-}
-
-.status-badge.rejected {
-  background-color: #fdeeee;
-  color: #e74c3c;
-}
-
-.donation-details {
-  padding: 16px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.detail-row {
-  display: grid;
-  grid-template-columns: 100px 1fr;
-  margin-bottom: 12px;
-  font-size: 14px;
   align-items: center;
 }
 
-.detail-label {
-  color: #7f8c8d;
-  font-weight: 500;
-  padding-right: 10px;
+.wallet-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
 }
 
-.detail-value {
-  color: #34495e;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.wallet-connected {
+  display: flex;
+  align-items: center;
+  background-color: #e3f8e2;
+  color: #2e7d32;
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
-.card-actions {
-  padding: 16px;
-  border-top: 1px solid #eee;
-  background-color: #f9f9f9;
+.wallet-connected::after {
+  content: "✓";
+  margin-left: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 
-.status-select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  background-color: white;
+.network-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.network-correct {
+  background-color: #e3f8e2;
+  color: #2e7d32;
+}
+
+.network-wrong {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.network-switch-button {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 14px;
-  outline: none;
-  color: #333;
-  transition: border-color 0.2s;
+  transition: background-color 0.2s;
 }
 
-.status-select:hover, .status-select:focus {
-  border-color: #3498db;
+.network-switch-button:hover {
+  background-color: #f57c00;
+}
+
+.network-warning {
+  background-color: #fff3e0;
+  color: #e65100;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #ff9800;
+}
+
+.network-warning p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.connect-wallet-button {
+  background-color: #4361ee;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.connect-wallet-button:hover {
+  background-color: #3651d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
 }
 
 .error-message {
-  background-color: #fdeeee;
-  border-left: 4px solid #e74c3c;
-  color: #c0392b;
-  padding: 12px 15px;
-  margin-bottom: 20px;
-  border-radius: 4px;
-  font-size: 14px;
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  border-left: 4px solid #d32f2f;
 }
 
-.empty-state {
-  padding: 40px 20px;
-  text-align: center;
-  color: #95a5a6;
+.blockchain-info {
+  background-color: #e8f4fd;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #2196f3;
 }
 
-.empty-icon {
-  font-size: 32px;
-  display: block;
-  margin-bottom: 15px;
+.blockchain-info p {
+  margin: 0;
+  color: #0d47a1;
+  font-size: 0.9rem;
 }
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .donations-list {
-    grid-template-columns: 1fr;
-  }
-  
-  .admin-container {
-    padding: 15px;
-  }
-}
-
-/* Add these new styles for the location filter */
 
 .location-filter-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
   background-color: white;
+  padding: 0.8rem 1rem;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  padding: 16px 20px;
-  margin-bottom: 25px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.location-filter-container label {
+  font-weight: 600;
+  margin-right: 1rem;
+  color: #424242;
+}
+
+.location-filter-select {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  background-color: white;
+  min-width: 200px;
+  color: #424242;
+  font-size: 0.9rem;
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.donation-section {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.donation-section h3 {
+  margin-top: 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  color: #3a3a3a;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.donation-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.donation-card {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  background-color: #ffffff;
+  border: 1px solid #f0f0f0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.donation-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.donation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.donation-id {
+  font-size: 0.8rem;
+  color: #757575;
+  font-weight: 500;
+}
+
+.status-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pending {
+  background-color: #fff8e1;
+  color: #ff8f00;
+  border: 1px solid #ffe082;
+}
+
+.accepted {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.rejected {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.donation-details {
+  padding: 1rem;
+}
+
+.donation-details p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.donation-details p strong {
+  font-weight: 600;
+  color: #333;
+  width: 80px;
+  display: inline-block;
+}
+
+.donation-actions {
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem 1rem;
+  gap: 0.8rem;
+}
+
+.donation-actions button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.donation-actions button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.donation-actions .accept-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.donation-actions .accept-btn:hover:not(:disabled) {
+  background-color: #388e3c;
+}
+
+.donation-actions .reject-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.donation-actions .reject-btn:hover:not(:disabled) {
+  background-color: #d32f2f;
+}
+
+.blockchain-status {
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+}
+
+.blockchain-loading {
+  display: flex;
+  align-items: center;
+  color: #2196f3;
+}
+
+.blockchain-loading::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  border: 2px solid #2196f3;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.blockchain-success {
+  color: #2e7d32;
   display: flex;
   align-items: center;
 }
 
-.location-filter-container label {
-  font-weight: 500;
-  color: #2c3e50;
-  margin-right: 15px;
-  font-size: 15px;
+.blockchain-success::before {
+  content: "✓";
+  display: inline-block;
+  margin-right: 8px;
+  font-weight: bold;
+  color: #2e7d32;
 }
 
-.location-filter-select {
-  min-width: 220px;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  background-color: white;
+.blockchain-error {
+  color: #c62828;
+  display: flex;
+  align-items: center;
+}
+
+.blockchain-error::before {
+  content: "✕";
+  display: inline-block;
+  margin-right: 8px;
+  font-weight: bold;
+  color: #c62828;
+}
+
+.tx-hash {
+  color: #1976d2;
+  text-decoration: underline;
   cursor: pointer;
-  font-size: 14px;
-  outline: none;
-  color: #333;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: monospace;
 }
 
-.location-filter-select:hover {
-  border-color: #3498db;
+.no-donations {
+  color: #9e9e9e;
+  text-align: center;
+  padding: 2rem 0;
+  font-style: italic;
 }
 
-.location-filter-select:focus {
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+@media (max-width: 768px) {
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .wallet-status {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .donation-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .location-filter-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .location-filter-select {
+    width: 100%;
+  }
+}
+
+/* Add these new styles to your existing CSS file */
+
+.admin-dashboard-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.blockchain-stats, 
+.blockchain-verification {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.blockchain-stats h4,
+.blockchain-verification h4,
+.transaction-history h4 {
+  margin-top: 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 0.75rem;
+}
+
+.stats-content p {
+  margin: 0.5rem 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.verification-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.verification-input {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.verification-input input {
+  flex-grow: 1;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.verification-input button {
+  background-color: #4361ee;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.verification-input button:hover {
+  background-color: #3651d3;
+}
+
+.verification-result {
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+}
+
+.verification-result.found {
+  background-color: #e8f5e9;
+  border: 1px solid #c8e6c9;
+}
+
+.verification-result.not-found {
+  background-color: #ffebee;
+  border: 1px solid #ffcdd2;
+}
+
+.verification-result p {
+  margin: 0.3rem 0;
+}
+
+.verification-success {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.verification-error {
+  color: #c62828;
+  font-weight: 600;
+}
+
+.transaction-history {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.tx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tx-table th {
+  text-align: left;
+  padding: 0.8rem;
+  border-bottom: 2px solid #f0f0f0;
+  color: #424242;
+  font-weight: 600;
+}
+
+.tx-table td {
+  padding: 0.8rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tx-table tr.pending {
+  background-color: #fff8e1;
+}
+
+.tx-hash {
+  font-family: monospace;
+  color: #1976d2;
+}
+
+.tx-status {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.tx-status.confirmed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.tx-status.pending {
+  background-color: #fff8e1;
+  color: #ff8f00;
+}
+
+.no-transactions {
+  color: #9e9e9e;
+  text-align: center;
+  padding: 1rem 0;
+  font-style: italic;
+}
+
+.demo-controls {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.demo-button {
+  background-color: #7b61ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.8rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.demo-button:hover {
+  background-color: #6a4fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(123, 97, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard-top {
+    grid-template-columns: 1fr;
+  }
+  
+  .tx-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+/* Add these new styles for rejection countdown */
+
+.rejection-countdown {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 5px 10px;
+  margin-top: 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  text-align: center;
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  from { opacity: 0.8; }
+  to { opacity: 1; }
 }

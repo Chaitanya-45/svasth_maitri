@@ -1,17 +1,21 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/database';
-import 'firebase/storage';
+import 'firebase/compat/storage';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAUnIFb5kBNmneXIxfGsy4eSpOSJwSzlW0",
-    authDomain: "svasthmaitri.firebaseapp.com",
-    databaseURL: "https://svasthmaitri-default-rtdb.firebaseio.com",
-    projectId: "svasthmaitri",
-    storageBucket: "svasthmaitri.appspot.com",
-    messagingSenderId: "740156489180",
-    appId: "1:740156489180:web:90584ca68310c539b2e319"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
+
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+    throw new Error('Missing required Firebase environment variables. Check front-end/.env');
+}
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -19,6 +23,7 @@ if (!firebase.apps.length) {
 
 const auth = firebase.auth();
 const database = firebase.database();
+const storage = firebase.storage();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
 export const checkIsAdmin = async (email) => {
@@ -59,4 +64,4 @@ export const setupAdminUsers = async () => {
 
 window.setupAdminUsers = setupAdminUsers;
 
-export { auth, database, googleProvider };
+export { auth, database, storage, googleProvider };
